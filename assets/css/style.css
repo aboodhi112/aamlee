@@ -1985,3 +1985,323 @@ body {
     justify-content: center;
   }
 }
+/* Lock down the disabled state for out-of-stock items */
+.product-card__buy-btn[disabled] {
+  pointer-events: none !important; /* Disables all clicking, hovering, and tap actions completely */
+  border-color: var(--border-dark) !important;
+  cursor: not-allowed !important;
+}
+
+/* Hide the "Buy Now" text when the item is disabled */
+.product-card__buy-btn[disabled] span:last-child {
+  visibility: hidden !important;
+}
+
+/* Inject the "STOCK OUT" message neatly over the disabled button overlay */
+.product-card__buy-btn[disabled]::after {
+  content: "STOCK OUT";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  color: var(--text-muted-dark);
+  z-index: 5;
+}
+/* --- Product Interactive UI Overrides --- */
+.qty-selector input::-webkit-outer-spin-button,
+.qty-selector input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  /* On extremely small mobile phones, stack the row layout into clean full blocks */
+  .purchase-controls__row-top {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+  
+  .qty-selector {
+    justify-content: space-between;
+    width: 100% !important;
+  }
+}
+
+/* Ensure the smaller related cards align smoothly */
+.related-products-section .product-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+/* --- High-End Luxury Button Animations & Layer Fix --- */
+.custom-luxury-btn {
+  position: relative !important;
+  overflow: hidden !important;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  z-index: 1 !important;
+}
+
+/* Ensure text elements float cleanly on top of expanding background bubbles */
+.custom-luxury-btn span:last-child {
+  position: relative !important;
+  z-index: 5 !important;
+  display: block !important;
+  transition: color 0.35s ease !important;
+}
+
+/* Elite Hover Animations */
+.custom-luxury-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(33, 7, 8, 0.15);
+  border-color: var(--gold-deep) !important;
+}
+
+/* Dynamic Pressed Click Effect */
+.custom-luxury-btn:active {
+  transform: translateY(1px) scale(0.99);
+  transition: all 0.1s ease !important;
+}
+
+/* Sync text color states when bubble triggers fill updates */
+.custom-luxury-btn:hover span:last-child {
+  color: var(--bg-cream) !important;
+}
+.add-to-cart-wide-btn:hover span:last-child {
+  color: var(--gold-soft) !important;
+}
+/* --- Enhance Product Page Price Readability --- */
+.product-info .price {
+  font-family: var(--font-display) !important;
+  font-size: 2.5rem !important; /* Significantly larger */
+  font-weight: 500 !important;  /* Adds just enough thickness to stand out clearly */
+  letter-spacing: 0.05em !important; /* Luxury spacing */
+  color: var(--text-dark) !important;
+  margin-bottom: 2rem !important;
+}
+/* --- Mobile Product Page Layout Reordering --- */
+/* --- Global Product Page Layout Reordering (Desktop & Mobile) --- */
+.product-info {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* 1. Pull the interactive quantity & payment buttons right up below the price */
+.product-info .product-purchase-controls {
+  order: 2 !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 2rem !important;
+}
+
+/* 2. Drop the long description bullets completely underneath the main buying deck */
+.product-info .desc {
+  order: 3 !important;
+  margin-top: 1rem !important;
+  margin-bottom: 2rem !important;
+}
+
+/* 3. Ensure the Shipping & Delivery accordion wraps up neatly at the absolute bottom */
+.product-info > div[style*="border-top"] {
+  order: 4 !important;
+}
+
+/* --- Keep the Mobile-Only Centering Rules Intact --- */
+@media (max-width: 768px) {
+  .product-info {
+    text-align: center !important;
+    align-items: center !important;
+  }
+
+  .product-info span.eyebrow,
+  .product-info h1,
+  .product-info .price {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .product-info .product-purchase-controls {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+  }
+
+  .product-info .desc {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .product-info .desc ul,
+  .product-info .desc ol {
+    display: inline-block !important;
+    text-align: left !important;
+    padding-left: 1.2rem !important;
+    margin: 0 auto !important;
+  }
+}
+/* --- Tighten Spacing Between Product Title and Price --- */
+.product-info h1 {
+  margin-bottom: 0.25rem !important; /* Reduces the space underneath the title */
+  line-height: 1.1 !important; /* Prevents the invisible text box from being too tall */
+}
+
+.product-info .price {
+  margin-top: 0 !important; /* Completely removes the default browser paragraph gap */
+}
+/* --- Fix Recommendations Grid Buttons on Hover --- */
+#related-catalog-grid .product-card .btn {
+  position: relative !important;
+  overflow: hidden !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform: none !important; /* Strips general layout shifts */
+  transition: background-color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* Force the internal text to lock dead-center inside the button borders */
+#related-catalog-grid .product-card .btn span:last-child {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 100% !important;
+  text-align: center !important;
+  z-index: 5 !important;
+}
+
+/* Elegant low-profile luxury scale just for the card frame on hover */
+#related-catalog-grid .product-card:hover .btn {
+  border-color: var(--gold-deep) !important;
+  background-color: var(--text-dark) !important;
+}
+
+#related-catalog-grid .product-card:hover .btn span:last-child {
+  color: var(--bg-cream) !important;
+}
+/* --- Mobile View: Compact 2-Column Recommendations Grid --- */
+@media (max-width: 768px) {
+  #related-catalog-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* Forces a neat 2-column grid instead of stacking */
+    gap: 1rem !important; /* Tighter luxury spacing between cards */
+    padding: 0 0.5rem;
+  }
+
+  /* Scale down the text elements so they fit beautifully side-by-side */
+  #related-catalog-grid .product-card h4 {
+    font-size: 0.85rem !important; /* Smaller, sharper product titles */
+    margin-top: 0.5rem !important;
+  }
+
+  #related-catalog-grid .product-card p {
+    font-size: 0.75rem !important; /* Slightly smaller price tag text */
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Make the buttons a bit more low-profile on mobile layouts */
+  #related-catalog-grid .product-card .btn {
+    min-height: 32px !important;
+    font-size: 0.6rem !important;
+    width: 90% !important;
+  }
+}
+/* --- Mobile View: Perfect Center Alignment Stack --- */
+@media (max-width: 768px) {
+  /* Center the container text flow */
+  .product-info {
+    text-align: center !important;
+    align-items: center !important;
+  }
+
+  /* Center the brand name, title, and price fields */
+  .product-info span.eyebrow,
+  .product-info h1,
+  .product-info .price {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Center the purchase buttons block */
+  .product-info .product-purchase-controls {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+  }
+
+  /* Center the description text block and its bullet alignment */
+  .product-info .desc {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Remove classic left-bullet indents so lists center up gracefully */
+  .product-info .desc ul,
+  .product-info .desc ol {
+    display: inline-block !important;
+    text-align: left !important; /* Keeps bullet text readable while the block itself is centered */
+    padding-left: 1.2rem !important; 
+    margin: 0 auto !important;
+  }
+}
+/* --- Catalog Grid Multi-Image Interaction UI --- */
+.dynamic-clickable-card {
+  cursor: pointer !important;
+  position: relative;
+}
+
+/* Base Arrow Overlays */
+.card-nav-arrow {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) scale(0.9);
+  background: rgba(246, 240, 232, 0.85) !important; /* Soft luxury cream overlay */
+  color: var(--text-dark) !important;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  z-index: 15;
+  opacity: 0; /* Hidden by default on standard page loads */
+  transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease !important;
+  box-shadow: var(--shadow-soft);
+}
+
+.arrow-left { left: 12px; }
+.arrow-right { right: 12px; }
+
+/* Desktop Interaction: Reveal Navigation Dots/Arrows smoothly on Card Hover */
+@media (min-width: 769px) {
+  .dynamic-clickable-card:hover .card-nav-arrow {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+/* Mobile View Adjustments: Permanently reveal lower profile controls for touch targets */
+@media (max-width: 768px) {
+  .card-nav-arrow {
+    opacity: 0.85;
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+    background: rgba(246, 240, 232, 0.95) !important;
+  }
+  .arrow-left { left: 6px; }
+  .arrow-right { right: 6px; }
+}
+
+.card-nav-arrow:hover {
+  background: var(--bg-dark) !important;
+  color: var(--text-light) !important;
+}

@@ -164,11 +164,30 @@
                                         }
                                     </style>
 
-                                    <div class="add-to-cart-group" style="margin-top: 2rem;">
-                                        <button class="btn btn--dark" style="width: 100%; max-width: 300px;"
-                                            onclick="document.getElementById('cart').addLine(event).showModal()"
-                                            shopify-attr--disabled="!product.selectedOrFirstAvailableVariant.availableForSale"><span></span><span></span><span></span><span></span><span></span><span>Add
-                                                to Cart</span></button>
+                                    <div class="product-purchase-controls" style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; max-width: 400px;">
+                                        
+                                        <div class="purchase-controls__row-top" style="display: flex; gap: 1rem; width: 100%;">
+                                            <div class="qty-selector" style="display: flex; border: 1px solid var(--border-dark); align-items: center; min-height: 50px; background: rgba(255,255,255,0.2); position: relative; z-index: 5;">
+                                                <button type="button" onclick="var ip = document.getElementById('product-quantity'); if(parseInt(ip.value) > 1) { ip.value = parseInt(ip.value) - 1; }" style="padding: 0 1rem; color: var(--text-dark); font-weight: 600; font-size: 1.1rem; z-index: 10;">−</button>
+                                                <input type="number" id="product-quantity" value="1" min="1" style="width: 40px; text-align: center; border: none; background: transparent; font-family: var(--font-body); color: var(--text-dark); font-weight: 500; appearance: none; -moz-appearance: textfield; pointer-events: none;">
+                                                <button type="button" onclick="var ip = document.getElementById('product-quantity'); ip.value = parseInt(ip.value) + 1;" style="padding: 0 1rem; color: var(--text-dark); font-weight: 600; font-size: 1.1rem; z-index: 10;">+</button>
+                                            </div>
+
+                                            <button class="btn btn--dark custom-luxury-btn" style="flex: 1; min-height: 50px;"
+                                                shopify-attr--disabled="!product.selectedOrFirstAvailableVariant.availableForSale"
+                                                shopify-attr--data-variant-id="product.selectedOrFirstAvailableVariant.id"
+                                                onclick="var buyQty = document.getElementById('product-quantity').value; var rawId = this.getAttribute('data-variant-id'); if(rawId) { var cleanId = rawId.split('/').pop(); window.location.href = 'https://2p1s8f-yx.myshopify.com/cart/' + cleanId + ':' + buyQty; }">
+                                                <span></span><span></span><span></span><span></span><span></span>
+                                                <span style="position: relative; z-index: 3; display: block; color: inherit;">Buy Now</span>
+                                            </button>
+                                        </div>
+
+                                        <button class="btn btn--dark add-to-cart-wide-btn custom-luxury-btn" style="width: 100%; min-height: 50px; border-color: var(--text-dark); background: var(--text-dark); color: var(--bg-cream);"
+                                            shopify-attr--disabled="!product.selectedOrFirstAvailableVariant.availableForSale"
+                                            onclick="var cartQty = parseInt(document.getElementById('product-quantity').value); var activeCart = document.getElementById('cart'); while(cartQty > 0) { activeCart.addLine(event); cartQty--; } activeCart.showModal();">
+                                            <span></span><span></span><span></span><span></span><span></span>
+                                            <span style="position: relative; z-index: 3; display: block; color: inherit;">Add to Cart</span>
+                                        </button>
                                     </div>
 
                                     <div
@@ -177,17 +196,39 @@
                                             style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-dark); padding-bottom: 1rem;">
                                             <summary
                                                 style="font-family: var(--font-body); font-weight: 600; text-transform: uppercase; font-size: var(--fs-sm); letter-spacing: 0.1em; cursor: pointer;">
-                                                Shipping & Returns</summary>
+                                                Shipping & Delivery</summary>
                                             <p
-                                                style="margin-top: 1rem; color: var(--text-muted-dark); font-size: var(--fs-sm);">
-                                                Complimentary express shipping on all orders. Returns accepted within 30
-                                                days of delivery.</p>
+                                                style="margin-top: 1rem; color: var(--text-muted-dark); font-size: var(--fs-sm); line-height: 1.6;">
+                                                Complimentary express delivery on all orders above ₹1,000. For orders under ₹1,000, shipping charges will be calculated automatically at checkout based on your delivery pin code.</p>
                                         </details>
                                     </div>
                                 </div>
                             </div>
                         </template>
                     </shopify-context>
+                    <section class="related-products-section" style="border-top: 1px solid var(--border-dark); margin-top: 6rem; padding-top: 4rem;">
+                        <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+                            <span class="eyebrow" style="font-size: var(--fs-xs); color: var(--text-muted-dark); letter-spacing: 0.15em;">Curated Choices</span>
+                            <h2 style="font-size: var(--fs-lg); font-family: var(--font-display); color: var(--text-dark); margin-top: 0.25rem;">You May Also Like</h2>
+                        </div>
+
+                        <div id="related-catalog-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; max-width: 960px; margin: 0 auto;">
+                            <shopify-list-context type="product" query="products" first="4">
+                                <template>
+                                    <div class="product-card reveal is-visible" style="padding-bottom: 1rem;" shopify-attr--data-title="product.title">
+                                        <div class="product-image-wrapper" style="aspect-ratio: 1; overflow: hidden; margin-bottom: 0.75rem;">
+                                            <shopify-media query="product.selectedOrFirstAvailableVariant.image" style="width: 100%; height: 100%; object-fit: cover; display: block;"></shopify-media>
+                                        </div>
+                                        <h4 style="font-family: var(--font-display); font-size: var(--fs-sm); margin: 0.5rem 0 0.25rem 0; color: var(--text-dark);"><shopify-data query="product.title"></shopify-data></h4>
+                                        <p style="font-size: var(--fs-xs); color: var(--text-muted-dark); margin: 0 0 0.75rem 0;"><shopify-money query="product.selectedOrFirstAvailableVariant.price"></shopify-money></p>
+                                        <a shopify-attr--href="'product.html?handle=' + product.handle" class="btn btn--dark" style="min-height: 36px; padding: 0.5rem 1rem; font-size: 0.65rem; width: 85%; margin: 0 auto; display: block;">
+                                            <span>View Glow</span>
+                                        </a>
+                                    </div>
+                                </template>
+                            </shopify-list-context>
+                        </div>
+                    </section>
                 </div>
             </section>
         </main>

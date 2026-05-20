@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product | Aamleef Fenza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script type="module" src="https://cdn.shopify.com/storefront/web-components.js"></script>
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+</head>
+
+<body class="theme-light">
+    <shopify-store store-domain="2p1s8f-yx.myshopify.com" public-access-token="730fb496b29ebd0c38574b927925f703"
+        country="US" language="en">
+        <header class="site-header" style="background: var(--bg-dark); border-bottom: 1px solid var(--border-light);">
+            <div class="site-header__inner">
+                <div class="header-left-col">
+                    <button class="icon-btn mobile-menu-btn" aria-label="Menu">&#9776;</button>
+                    <a href="index.html" class="logo"><img src="assets/images/logo.png?v=2" alt="Aamleef Fenza Logo"
+                            class="header-logo-img"></a>
+                </div>
+                <nav class="main-nav">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="shop.html" class="nav-link active">Shop</a>
+                    <a href="collections.html" class="nav-link">Collections</a>
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="contact.html" class="nav-link">Contact</a>
+                </nav>
+                <div class="header-icons" style="display: flex; align-items: center; gap: 0;">
+                    <button class="icon-btn" aria-label="Search" onclick="openSearchModal()"
+                        style="display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer;">
+                        <img src="assets/images/icon-search.png" alt="Search"
+                            style="width: 72px; height: 72px; object-fit: contain;">
+                    </button>
+
+                    <button class="icon-btn" aria-label="Account"
+                        onclick="window.open('https://2p1s8f-yx.myshopify.com/account', '_blank')"
+                        style="display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer;">
+                        <img src="assets/images/icon-account.png" alt="Account"
+                            style="width: 72px; height: 72px; object-fit: contain;">
+                    </button>
+
+                    <button class="icon-btn" aria-label="Cart" onclick="document.getElementById('cart').showModal()"
+                        style="display: flex; align-items: center; justify-content: center; padding: 0; position: relative;">
+                        <span id="cart-count"
+                            style="position: absolute; top: 2px; right: 2px; background: #c6a06a; color: #210708; font-family: Inter, sans-serif; font-size: 0.6rem; font-weight: 700; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: scale(0.5);">0</span>
+                        <img src="assets/images/icon-cart.png" alt="Cart"
+                            style="width: 72px; height: 72px; object-fit: contain;">
+                    </button>
+                </div>
+        </header>
+
+        <div id="drawer-overlay"></div>
+
+        <nav id="mobile-drawer" aria-label="Mobile Navigation">
+            <div class="drawer-header">
+                <a href="index.html" class="drawer-logo">
+                    <img src="assets/images/logo.png?v=2" alt="Aamleef Fenza">
+                </a>
+                <button id="drawer-close" class="drawer-close" aria-label="Close menu">&times;</button>
+            </div>
+            <div class="drawer-nav">
+                <a href="index.html">Home</a>
+                <a href="shop.html" class="active">Shop</a>
+                <a href="collections.html">Collections</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="drawer-footer">
+                <button class="icon-btn" aria-label="Search" onclick="closeDrawer(); openSearchModal()"><img
+                        src="assets/images/icon-search.png" alt="Search"
+                        style="width:40px;height:40px;object-fit:contain;filter:invert(1) sepia(1) saturate(5) hue-rotate(345deg) brightness(0.9);"></button>
+                <button class="icon-btn" aria-label="Cart"
+                    onclick="closeDrawer(); document.getElementById('cart').showModal()"><img
+                        src="assets/images/icon-cart.png" alt="Cart"
+                        style="width:40px;height:40px;object-fit:contain;filter:invert(1) sepia(1) saturate(5) hue-rotate(345deg) brightness(0.9);"></button>
+            </div>
+        </nav>
+
+        <main>
+            <section class="product-detail-section">
+                <div class="container">
+                    <div class="breadcrumbs reveal" style="margin-bottom: 3rem;">
+                        <a href="index.html">Home</a> / <a href="shop.html">Shop</a> / <span
+                            id="product-breadcrumb-name">Product Details</span>
+                    </div>
+
+                    <shopify-context id="product-context" type="product" handle="lumiere-ring">
+                        <template>
+                            <div class="product-detail-grid">
+                                <div class="product-gallery reveal is-visible">
+                                    <div class="gallery-main" style="width: 100%; aspect-ratio: 1;">
+                                        <shopify-media id="main-product-image"
+                                            query="product.selectedOrFirstAvailableVariant.image"
+                                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></shopify-media>
+                                    </div>
+                                    <div class="gallery-thumbs" id="product-thumbnails" style="margin-top: 1rem;"></div>
+                                </div>
+
+                                <div class="product-info reveal is-visible" style="transition-delay: 0.2s;">
+                                    <span class="eyebrow"
+                                        style="color: var(--text-muted-dark); margin-bottom: 0.5rem;"><shopify-data
+                                            query="product.vendor"></shopify-data></span>
+                                    <h1><shopify-data query="product.title"></shopify-data></h1>
+                                    <p class="price" style="font-size: 1.5rem; margin-bottom: 1.5rem;"><shopify-money
+                                            query="product.selectedOrFirstAvailableVariant.price"></shopify-money></p>
+                                    <div class="desc"
+                                        style="margin-bottom: 2rem; color: var(--text-muted-dark); font-size: var(--fs-sm); line-height: 1.6;">
+                                        <shopify-data query="product.descriptionHtml"></shopify-data>
+                                    </div>
+
+                                    <shopify-variant-selector></shopify-variant-selector>
+                                    <style>
+                                        shopify-variant-selector::part(form) {
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: 1.5rem;
+                                        }
+
+                                        shopify-variant-selector::part(label) {
+                                            font-family: var(--font-body);
+                                            font-weight: 600;
+                                            text-transform: uppercase;
+                                            font-size: var(--fs-xs);
+                                            letter-spacing: 0.1em;
+                                            color: var(--text-dark);
+                                            margin-bottom: 0.5rem;
+                                            display: block;
+                                        }
+
+                                        shopify-variant-selector::part(select) {
+                                            width: 100%;
+                                            max-width: 300px;
+                                            padding: 0.75rem;
+                                            border: 1px solid var(--border-dark);
+                                            font-family: var(--font-body);
+                                            font-size: 1rem;
+                                            background: transparent;
+                                        }
+
+                                        shopify-variant-selector::part(radio-group) {
+                                            display: flex;
+                                            gap: 1rem;
+                                            flex-wrap: wrap;
+                                        }
+
+                                        shopify-variant-selector::part(radio-label) {
+                                            padding: 0.5rem 1rem;
+                                            border: 1px solid var(--border-dark);
+                                            cursor: pointer;
+                                            transition: all 0.3s;
+                                        }
+
+                                        shopify-variant-selector::part(radio-label-selected) {
+                                            background: var(--bg-dark);
+                                            color: white;
+                                            border-color: var(--bg-dark);
+                                        }
+                                    </style>
+
+                                    <div class="add-to-cart-group" style="margin-top: 2rem;">
+                                        <button class="btn btn--dark" style="width: 100%; max-width: 300px;"
+                                            onclick="document.getElementById('cart').addLine(event).showModal()"
+                                            shopify-attr--disabled="!product.selectedOrFirstAvailableVariant.availableForSale"><span></span><span></span><span></span><span></span><span></span><span>Add
+                                                to Cart</span></button>
+                                    </div>
+
+                                    <div
+                                        style="border-top: 1px solid var(--border-dark); padding-top: 2rem; margin-top: 2rem;">
+                                        <details
+                                            style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-dark); padding-bottom: 1rem;">
+                                            <summary
+                                                style="font-family: var(--font-body); font-weight: 600; text-transform: uppercase; font-size: var(--fs-sm); letter-spacing: 0.1em; cursor: pointer;">
+                                                Shipping & Returns</summary>
+                                            <p
+                                                style="margin-top: 1rem; color: var(--text-muted-dark); font-size: var(--fs-sm);">
+                                                Complimentary express shipping on all orders. Returns accepted within 30
+                                                days of delivery.</p>
+                                        </details>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </shopify-context>
+                </div>
+            </section>
+        </main>
+
+        <dialog id="image-modal" class="image-modal">
+            <button id="image-close" class="image-close" type="button" aria-label="Close preview">&times;</button>
+            <img id="image-preview-src" src="" alt="Fullscreen Preview">
+        </dialog>
+
+        <dialog id="search-modal" class="search-modal">
+            <div class="search-modal__inner">
+                <div class="search-modal__topbar">
+                    <div class="search-modal__title">Search the site</div>
+                    <button id="search-close" class="search-close" type="button"
+                        aria-label="Close search">&times;</button>
+                </div>
+                <form id="search-form" class="search-form">
+                    <input id="search-input" class="search-field" type="search" name="query"
+                        placeholder="Search pages or products">
+                    <div id="search-results" class="search-results"></div>
+                    <div id="search-empty" class="search-empty">
+                        Start with one of these:
+                        <div class="search-empty__links">
+                            <a href="shop.html" data-search-index data-search-title="Shop all jewelry"
+                                data-search-meta="Products">Shop all jewelry</a>
+                            <a href="collections.html" data-search-index data-search-title="Collections"
+                                data-search-meta="Page">Collections</a>
+                            <a href="product.html?handle=lumiere-ring" data-search-index
+                                data-search-title="Lumiere Ring" data-search-meta="Product">Lumiere Ring</a>
+                            <a href="contact.html" data-search-index data-search-title="Contact"
+                                data-search-meta="Support">Contact</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="logo"><img src="assets/images/logo.png?v=2" alt="Aamleef Fenza Logo"
+                                style="height: 200px; width: auto; margin: -60px 0;"></a>
+                    </div>
+                    <div class="footer-col">
+                        <h4 class="footer-title">Shop</h4>
+                        <ul class="footer-links">
+                            <li><a href="shop.html">All Jewelry</a></li>
+                            <li><a href="product.html?handle=lumiere-ring">Rings</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4 class="footer-title">Customer Care</h4>
+                        <ul class="footer-links">
+                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <shopify-cart id="cart"></shopify-cart>
+    </shopify-store>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

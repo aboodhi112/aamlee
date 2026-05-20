@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collections | Aamleef Fenza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .collection-hero {
+            position: relative;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-light);
+            background: var(--bg-dark);
+            overflow: hidden;
+        }
+
+        .collection-hero img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.5;
+        }
+
+        .collection-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+        }
+
+        .collection-block {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        @media (min-width: 1024px) {
+            .collection-block {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .collection-block:nth-child(even) .collection-img {
+                order: 2;
+            }
+
+            .collection-block:nth-child(even) .collection-text {
+                order: 1;
+            }
+        }
+
+        .collection-img {
+            aspect-ratio: 4/3;
+        }
+
+        .collection-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .collection-text {
+            background: var(--bg-cream);
+            color: var(--text-dark);
+            padding: 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .collection-text h2 {
+            font-size: var(--fs-2xl);
+            margin-bottom: 1rem;
+        }
+
+        .collection-text p {
+            color: var(--text-muted-dark);
+            max-width: 400px;
+            margin-bottom: 2rem;
+        }
+    </style>
+    <script type="module" src="https://cdn.shopify.com/storefront/web-components.js"></script>
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+</head>
+
+<body class="theme-light">
+    <shopify-store store-domain="2p1s8f-yx.myshopify.com" public-access-token="730fb496b29ebd0c38574b927925f703"
+        country="US" language="en">
+        <header class="site-header">
+            <div class="site-header__inner">
+                <div class="header-left-col">
+                    <button class="icon-btn mobile-menu-btn" aria-label="Menu">&#9776;</button>
+                    <a href="index.html" class="logo"><img src="assets/images/logo.png?v=2" alt="Aamleef Fenza Logo"
+                            class="header-logo-img"></a>
+                </div>
+                <nav class="main-nav">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="shop.html" class="nav-link">Shop</a>
+                    <a href="collections.html" class="nav-link active">Collections</a>
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="contact.html" class="nav-link">Contact</a>
+                </nav>
+                <div class="header-icons" style="display: flex; align-items: center; gap: 0;">
+                    <button class="icon-btn" aria-label="Search" onclick="openSearchModal()"
+                        style="display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer;">
+                        <img src="assets/images/icon-search.png" alt="Search"
+                            style="width: 72px; height: 72px; object-fit: contain;">
+                    </button>
+
+                    <button class="icon-btn" aria-label="Account"
+                        onclick="window.open('https://2p1s8f-yx.myshopify.com/account', '_blank')"
+                        style="display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer;">
+                        <img src="assets/images/icon-account.png" alt="Account"
+                            style="width: 72px; height: 72px; object-fit: contain;">
+                    </button>
+
+                    <button class="icon-btn" aria-label="Cart" onclick="document.getElementById('cart').showModal()"
+                        style="display: flex; align-items: center; justify-content: center; padding: 0; position: relative;">
+                        <span id="cart-count"
+                            style="position: absolute; top: 2px; right: 2px; background: #c6a06a; color: #210708; font-family: Inter, sans-serif; font-size: 0.6rem; font-weight: 700; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: scale(0.5);">0</span>
+                        <img src="assets/images/icon-cart.png" alt="Cart"
+                            style="width: 72px; height: 72px; object-fit: contain;">
+                    </button>
+                </div>
+
+        </header>
+
+        <div id="drawer-overlay"></div>
+
+        <nav id="mobile-drawer" aria-label="Mobile Navigation">
+            <div class="drawer-header">
+                <a href="index.html" class="drawer-logo"><img src="assets/images/logo.png?v=2" alt="Aamleef Fenza"></a>
+                <button id="drawer-close" class="drawer-close" aria-label="Close menu">&times;</button>
+            </div>
+            <div class="drawer-nav">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="collections.html" class="active">Collections</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="drawer-footer">
+                <button class="icon-btn" aria-label="Search" onclick="closeDrawer(); openSearchModal()"><img
+                        src="assets/images/icon-search.png" alt="Search"
+                        style="width:40px;height:40px;object-fit:contain;filter:invert(1) sepia(1) saturate(5) hue-rotate(345deg) brightness(0.9);"></button>
+                <button class="icon-btn" aria-label="Cart"
+                    onclick="closeDrawer(); document.getElementById('cart').showModal()"><img
+                        src="assets/images/icon-cart.png" alt="Cart"
+                        style="width:40px;height:40px;object-fit:contain;filter:invert(1) sepia(1) saturate(5) hue-rotate(345deg) brightness(0.9);"></button>
+            </div>
+        </nav>
+
+        <main>
+            <section class="collection-hero reveal">
+                <img src="assets/images/products/necklace.png" alt="Collections Background">
+                <div class="collection-hero-content">
+                    <span class="eyebrow">Curated Durability</span>
+                    <h1 style="font-size: var(--fs-hero); margin-bottom: 1rem;">Collections</h1>
+                    <p style="font-size: var(--fs-md); color: var(--text-muted-light);">Discover pieces united by
+                        brilliant design and uncompromising anti-tarnish quality.</p>
+                </div>
+            </section>
+
+            <section>
+                <div class="collection-block reveal">
+                    <div class="collection-img"><img src="assets/images/products/ring.png" alt="Signature Collection">
+                    </div>
+                    <div class="collection-text">
+                        <h2>The Signature Collection</h2>
+                        <p>Our most iconic designs, featuring classic silhouettes redefined for the modern heirloom.</p>
+                        <a href="shop.html"
+                            class="btn btn--dark"><span></span><span></span><span></span><span></span><span></span><span>Shop
+                                Collection</span></a>
+                    </div>
+                </div>
+
+                <div class="collection-block reveal">
+                    <div class="collection-img"><img src="assets/images/products/bracelet.png"
+                            alt="Waterproof Essentials"></div>
+                    <div class="collection-text">
+                        <h2>Waterproof Essentials</h2>
+                        <p>Dive in with confidence. Our stainless steel pieces are water-resistant and designed to stay
+                            tarnish-free.</p>
+                        <a href="shop.html"
+                            class="btn btn--dark"><span></span><span></span><span></span><span></span><span></span><span>Shop
+                                Collection</span></a>
+                    </div>
+                </div>
+
+                <div class="collection-block reveal">
+                    <div class="collection-img"><img src="assets/images/products/earrings.png"
+                            alt="Gold-Plated Glamour"></div>
+                    <div class="collection-text">
+                        <h2>Gold-Plated Glamour</h2>
+                        <p>Bold statement pieces featuring premium gold plating that stands up to daily wear.</p>
+                        <a href="shop.html"
+                            class="btn btn--dark"><span></span><span></span><span></span><span></span><span></span><span>Shop
+                                Collection</span></a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <dialog id="search-modal" class="search-modal">
+            <div class="search-modal__inner">
+                <div class="search-modal__topbar">
+                    <div class="search-modal__title">Search the site</div>
+                    <button id="search-close" class="search-close" type="button"
+                        aria-label="Close search">&times;</button>
+                </div>
+                <form id="search-form" class="search-form">
+                    <input id="search-input" class="search-field" type="search" name="query"
+                        placeholder="Search pages or products">
+                    <div id="search-results" class="search-results"></div>
+                    <div id="search-empty" class="search-empty">
+                        Start with one of these:
+                        <div class="search-empty__links">
+                            <a href="shop.html" data-search-index data-search-title="Shop all jewelry"
+                                data-search-meta="Products">Shop all jewelry</a>
+                            <a href="collections.html" data-search-index data-search-title="Collections"
+                                data-search-meta="Page">Collections</a>
+                            <a href="product.html?handle=lumiere-ring" data-search-index
+                                data-search-title="Lumiere Ring" data-search-meta="Product">Lumiere Ring</a>
+                            <a href="contact.html" data-search-index data-search-title="Contact"
+                                data-search-meta="Support">Contact</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="logo"><img src="assets/images/logo.png?v=2" alt="Aamleef Fenza Logo"
+                                style="height: 200px; width: auto; margin: -60px 0;"></a>
+                    </div>
+                    <div class="footer-col">
+                        <h4 class="footer-title">Shop</h4>
+                        <ul class="footer-links">
+                            <li><a href="shop.html">All Jewelry</a></li>
+                            <li><a href="product.html?handle=lumiere-ring">Rings</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4 class="footer-title">Customer Care</h4>
+                        <ul class="footer-links">
+                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <shopify-cart id="cart"></shopify-cart>
+    </shopify-store>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

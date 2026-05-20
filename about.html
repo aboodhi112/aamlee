@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Aamleef Fenza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .about-hero {
+            padding: 8rem 0;
+            background: var(--bg-cream) url('assets/images/bg-creme.png') center/cover;
+            text-align: center;
+            color: var(--text-dark);
+        }
+
+        .about-hero h1 {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            margin-bottom: 2rem;
+        }
+
+        .about-hero p {
+            font-size: var(--fs-md);
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--text-muted-dark);
+        }
+
+        .about-content {
+            padding: 6rem 0;
+            background: var(--bg-cream) url('assets/images/bg-creme.png') center/cover;
+            color: var(--text-dark);
+        }
+
+        .about-grid {
+            display: grid;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        @media (min-width: 1024px) {
+            .about-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .about-text h2 {
+            font-size: var(--fs-2xl);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: var(--text-muted-dark);
+        }
+    </style>
+    <script type="module" src="https://cdn.shopify.com/storefront/web-components.js"></script>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon.png">
+</head>
+
+<body class="theme-light">
+    <shopify-store store-domain="2p1s8f-yx.myshopify.com" public-access-token="730fb496b29ebd0c38574b927925f703"
+        country="US" language="en">
+        <header class="site-header" style="background: var(--bg-dark); border-bottom: 1px solid var(--border-light);">
+            <div class="site-header__inner">
+                <div class="header-left-col">
+                    <button class="icon-btn mobile-menu-btn" aria-label="Menu">&#9776;</button>
+                    <a href="index.html" class="logo"><img src="assets/images/logo.png?v=2" alt="Aamleef Fenza Logo"
+                            class="header-logo-img"></a>
+                </div>
+                <nav class="main-nav">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="shop.html" class="nav-link">Shop</a>
+                    <a href="collections.html" class="nav-link">Collections</a>
+                    <a href="about.html" class="nav-link active">About</a>
+                    <a href="contact.html" class="nav-link">Contact</a>
+                </nav>
+                <div class="header-icons" style="display: flex; align-items: center; gap: 0;">
+                    <button class="icon-btn" aria-label="Search" onclick="openSearchModal()"
+                        style="display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer;">
+                        <img src="assets/images/icon-search.png" alt="Search"
+                            style="width: 72px; height: 72px; object-fit: contain;">
+                    </button>
+
+                    <button class="icon-btn" aria-label="Account"
+                        onclick="window.open('https://2p1s8f-yx.myshopify.com/account', '_blank')"
+                        style="display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer;">
+                        <img src="assets/images/icon-account.png" alt="Account"
+                            style="width: 72px; height: 72px; object-fit: contain;">
+                    </button>
+
+                    <button class="icon-btn" aria-label="Cart" onclick="document.getElementById('cart').showModal()"
+                        style="display: flex; align-items: center; justify-content: center; padding: 0; position: relative;">
+                        <span id="cart-count"
+                            style="position: absolute; top: 2px; right: 2px; background: #c6a06a; color: #210708; font-family: Inter, sans-serif; font-size: 0.6rem; font-weight: 700; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: scale(0.5);">0</span>
+                        <img src="assets/images/icon-cart.png" alt="Cart"
+                            style="width: 72px; height: 72px; object-fit: contain;">
+                    </button>
+                </div>
+        </header>
+
+        <div id="drawer-overlay"></div>
+
+        <nav id="mobile-drawer" aria-label="Mobile Navigation">
+            <div class="drawer-header">
+                <a href="index.html" class="drawer-logo"><img src="assets/images/logo.png?v=2" alt="Aamleef Fenza"></a>
+                <button id="drawer-close" class="drawer-close" aria-label="Close menu">&times;</button>
+            </div>
+            <div class="drawer-nav">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="collections.html">Collections</a>
+                <a href="about.html" class="active">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="drawer-footer">
+                <button class="icon-btn" aria-label="Search" onclick="closeDrawer(); openSearchModal()"><img
+                        src="assets/images/icon-search.png" alt="Search"
+                        style="width:40px;height:40px;object-fit:contain;filter:invert(1) sepia(1) saturate(5) hue-rotate(345deg) brightness(0.9);"></button>
+                <button class="icon-btn" aria-label="Cart"
+                    onclick="closeDrawer(); document.getElementById('cart').showModal()"><img
+                        src="assets/images/icon-cart.png" alt="Cart"
+                        style="width:40px;height:40px;object-fit:contain;filter:invert(1) sepia(1) saturate(5) hue-rotate(345deg) brightness(0.9);"></button>
+            </div>
+        </nav>
+
+        <main>
+            <section class="about-hero reveal">
+                <div class="container">
+                    <span class="eyebrow" style="color: var(--text-muted-dark);">Our Mission</span>
+                    <h1>Designed for Life</h1>
+                    <p>Aamleef Fenza creates durable, everyday jewelry that does not compromise on elegance. We believe
+                        your favorite pieces should stay with you through real life, not just special occasions.</p>
+                </div>
+            </section>
+
+            <section class="about-content">
+                <div class="container about-grid reveal">
+                    <div class="about-img">
+                        <img src="assets/images/craftsmanship.png" alt="Premium Jewelry Design"
+                            style="border-radius: 4px;">
+                    </div>
+                    <div class="about-text">
+                        <h2>Uncompromising Quality</h2>
+                        <p>We source durable stainless steel and use premium gold-plating techniques so each piece feels
+                            elevated without becoming precious to the point of fragility.</p>
+                        <p>From everyday errands to dinner plans, our jewelry is designed to keep its finish, resist
+                            tarnish, and stay comfortable enough to become part of your routine.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="quote-strip">
+                <div class="container quote-strip__inner">
+                    <blockquote class="reveal" style="text-align: center;">
+                        "Jewelry should feel resilient, beautiful, and ready for real life."
+                    </blockquote>
+                </div>
+            </section>
+        </main>
+
+        <dialog id="search-modal" class="search-modal">
+            <div class="search-modal__inner">
+                <div class="search-modal__topbar">
+                    <div class="search-modal__title">Search the site</div>
+                    <button id="search-close" class="search-close" type="button"
+                        aria-label="Close search">&times;</button>
+                </div>
+                <form id="search-form" class="search-form">
+                    <input id="search-input" class="search-field" type="search" name="query"
+                        placeholder="Search pages or products">
+                    <div id="search-results" class="search-results"></div>
+                    <div id="search-empty" class="search-empty">
+                        Start with one of these:
+                        <div class="search-empty__links">
+                            <a href="shop.html" data-search-index data-search-title="Shop all jewelry"
+                                data-search-meta="Products">Shop all jewelry</a>
+                            <a href="collections.html" data-search-index data-search-title="Collections"
+                                data-search-meta="Page">Collections</a>
+                            <a href="product.html?handle=lumiere-ring" data-search-index
+                                data-search-title="Lumiere Ring" data-search-meta="Product">Lumiere Ring</a>
+                            <a href="contact.html" data-search-index data-search-title="Contact"
+                                data-search-meta="Support">Contact</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="logo"><img src="assets/images/logo.png?v=2" alt="Aamleef Fenza Logo"
+                                style="height: 200px; width: auto; margin: -60px 0;"></a>
+                    </div>
+                    <div class="footer-col">
+                        <h4 class="footer-title">Shop</h4>
+                        <ul class="footer-links">
+                            <li><a href="shop.html">All Jewelry</a></li>
+                            <li><a href="product.html?handle=lumiere-ring">Rings</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4 class="footer-title">Customer Care</h4>
+                        <ul class="footer-links">
+                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="shop.html">Shop</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <shopify-cart id="cart"></shopify-cart>
+    </shopify-store>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

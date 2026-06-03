@@ -114,88 +114,49 @@
                 </div>
             </section>
 
-            <section class="featured-collection">
-                <div class="container">
+            <section class="featured-collection" style="position: relative; overflow: hidden;">
+                <div class="container" style="position: relative;">
+                    
                     <div class="section-header reveal">
-                        <span class="eyebrow" style="color: var(--text-muted-dark);">Our Favorites</span>
-                        <h2>Featured Collection</h2>
+                        <span class="eyebrow" style="color: var(--text-muted-dark);">Our Masterpieces</span>
+                        <h2>Featured Pieces</h2>
                     </div>
-                    <div class="carousel-grid">
-                        <shopify-list-context type="product" query="products" first="8">
+
+                    <button class="slider-nav-btn nav-btn-left" aria-label="Slide Left" onclick="scrollFeaturedRow(-1)">&#10229;</button>
+                    <button class="slider-nav-btn nav-btn-right" aria-label="Slide Right" onclick="scrollFeaturedRow(1)">&#10230;</button>
+
+                    <div id="featured-products-row" class="featured-row-carousel">
+                        <shopify-list-context type="product" query="products" first="12">
                             <template>
-                                <div class="product-card reveal is-visible">
-                                    <div class="product-image-wrapper" style="position: relative;">
+                                <div class="product-card reveal is-visible dynamic-clickable-card"
+                                    shopify-attr--data-title="product.title"
+                                    shopify-attr--data-price="product.selectedOrFirstAvailableVariant.price.amount"
+                                    shopify-attr--data-handle="product.handle"
+                                    onclick="window.location.href = 'product.html?handle=' + this.getAttribute('shopify-attr--data-handle');"
+                                    style="cursor: pointer;">
+                                    
+                                    <div class="product-image-wrapper" style="position: relative; overflow: hidden; margin-bottom: 0.75rem;">
                                         <shopify-media query="product.selectedOrFirstAvailableVariant.image"
+                                            class="catalog-main-media-target"
                                             style="width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 1; border-radius: 8px;"></shopify-media>
-                                        <button shopify-attr--data-handle="product.handle"
-                                            onclick="window.location.href = 'product.html?handle=' + this.getAttribute('data-handle')"
-                                            class="btn btn--dark"
-                                            style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); opacity: 0; transition: opacity 0.3s; z-index: 10;"><span></span><span></span><span></span><span></span><span></span><span>Buy now</span>
-                                                </span></button>
                                     </div>
-                                    <h3 class="product-title" style="margin-top: 1rem;"><shopify-data
-                                            query="product.title"></shopify-data></h3>
-                                    <p class="product-price"><shopify-money
-                                            query="product.selectedOrFirstAvailableVariant.price"></shopify-money></p>
+                                    
+                                    <div class="product-card__meta-details">
+                                        <span class="product-card__category"><shopify-data query="product.vendor"></shopify-data></span>
+                                        <h3 class="product-card__title" style="margin-top: 0.25rem;">
+                                            <shopify-data query="product.title"></shopify-data>
+                                        </h3>
+                                        <p class="product-card__price">
+                                            <shopify-money query="product.selectedOrFirstAvailableVariant.price"></shopify-money>
+                                        </p>
+                                    </div>
                                 </div>
                             </template>
                         </shopify-list-context>
                     </div>
-                    <style>
-                        .carousel-grid {
-                            display: flex;
-                            overflow-x: auto;
-                            scroll-snap-type: x mandatory;
-                            gap: 2rem;
-                            padding-bottom: 2rem;
-                            /* Firefox elegant scrollbar */
-                            scrollbar-width: thin;
-                            scrollbar-color: var(--gold) rgba(43, 26, 20, 0.04);
-                        }
 
-                        /* WebKit (Chrome, Safari, Edge) elegant scrollbar */
-                        .carousel-grid::-webkit-scrollbar {
-                            height: 6px;
-                            /* Small, thin, and unobtrusive */
-                        }
-
-                        .carousel-grid::-webkit-scrollbar-track {
-                            background: rgba(43, 26, 20, 0.04);
-                            /* Very faint dark track to match the cream background */
-                            border-radius: 10px;
-                        }
-
-                        .carousel-grid::-webkit-scrollbar-thumb {
-                            background: var(--gold);
-                            border-radius: 10px;
-                        }
-
-                        .carousel-grid::-webkit-scrollbar-thumb:hover {
-                            background: var(--gold-deep);
-                        }
-
-                        .carousel-grid>shopify-list-context {
-                            display: contents;
-                        }
-
-                        .carousel-grid .product-card {
-                            flex: 0 0 320px;
-                            scroll-snap-align: start;
-                        }
-
-                        @media (max-width: 768px) {
-                            .carousel-grid .product-card {
-                                flex: 0 0 260px;
-                            }
-                        }
-
-                        .product-card:hover .product-image-wrapper button {
-                            opacity: 1 !important;
-                        }
-                    </style>
                 </div>
             </section>
-
             <section class="quote-strip">
                 <div class="container quote-strip__inner">
                     <blockquote class="reveal">

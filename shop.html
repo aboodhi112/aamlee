@@ -95,33 +95,46 @@
 
             <section class="shop-layout">
                 <div class="container" style="display: grid; gap: 3rem; grid-template-columns: 250px 1fr;">
+                    
                     <aside class="sidebar reveal">
                         <div class="shop-aside-card">
-                            <h3>Browse</h3>
-                            <p>Search and sort the catalog live, or jump straight into the collections customers ask for
-                                most.</p>
-                            <ul class="shop-link-list">
-                                <li><a href="collections.html">Waterproof Essentials</a></li>
-                                <li><a href="collections.html">Gold-Plated Glamour</a></li>
-                                <li><a href="product.html?handle=lumiere-ring">Signature Rings</a></li>
+                            <h3>Collections</h3>
+                            <p>Select a collection to filter the catalog live.</p>
+                            
+                            <ul class="shop-link-list" id="dynamic-collection-menu">
+                                <li>
+                                    <a href="#" class="collection-filter-btn active" data-collection-handle="all">
+                                        All Products
+                                    </a>
+                                </li>
+                                <shopify-list-context type="collection" query="collections" first="20">
+                                    <template>
+                                        <li>
+                                            <a href="#" class="collection-filter-btn" 
+                                               shopify-attr--data-collection-handle="collection.handle">
+                                                <shopify-data query="collection.title"></shopify-data>
+                                            </a>
+                                        </li>
+                                    </template>
+                                </shopify-list-context>
                             </ul>
                         </div>
+                        
                         <div class="shop-aside-card">
                             <h3>Need Help?</h3>
-                            <p>Questions about sizing, shipping, or material care can go straight to our client services
-                                team.</p>
-                            <a href="contact.html"
-                                class="btn btn--dark"><span></span><span></span><span></span><span></span><span></span><span>Contact
-                                    Us</span></a>
+                            <p>Questions about sizing, shipping, or material care can go straight to our client services team.</p>
+                            <a href="contact.html" class="btn btn--dark">
+                                <span></span><span></span><span></span><span></span><span></span>
+                                <span>Contact Us</span>
+                            </a>
                         </div>
                     </aside>
 
                     <div class="shop-main">
                         <div class="shop-toolbar reveal">
-                            <span id="product-count">Products</span>
+                            <span id="product-count">Loading items...</span>
                             <div class="shop-toolbar__controls">
-                                <input id="shop-search" class="search-field shop-search" type="search"
-                                    placeholder="Search by product name">
+                                <input id="shop-search" class="search-field shop-search" type="search" placeholder="Search by product name">
                                 <select id="sort">
                                     <option value="default">Featured</option>
                                     <option value="price-asc">Price: Low to High</option>
@@ -131,50 +144,32 @@
                             </div>
                         </div>
 
-                        <div id="shop-catalog" class="grid"
-                            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
-                            <shopify-list-context type="product" query="products" first="12">
+                        <div id="shop-catalog" class="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
+                            <shopify-list-context type="product" query="products" first="50">
                                 <template>
                                     <div class="product-card reveal is-visible dynamic-clickable-card" 
                                         shopify-attr--data-title="product.title"
                                         shopify-attr--data-price="product.selectedOrFirstAvailableVariant.price.amount"
                                         shopify-attr--data-handle="product.handle"
-                                        onclick="if(!event.target.closest('.card-nav-arrow')) { window.location.href = 'product.html?handle=' + this.getAttribute('data-handle'); }">
+                                        onclick="window.location.href = 'product.html?handle=' + this.getAttribute('data-handle');">
                                         
-                                        <div class="product-image-wrapper" style="position: relative; cursor: pointer;">
+                                        <div class="product-image-wrapper" style="position: relative; cursor: pointer; margin-bottom: 0.75rem;">
                                             <shopify-media query="product.selectedOrFirstAvailableVariant.image"
                                                 class="catalog-main-media-target"
                                                 style="width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 1;"></shopify-media>
-                                            
-                                            <button type="button" class="card-nav-arrow arrow-left" aria-label="Previous image" 
-                                                onclick="event.stopPropagation(); var media = this.parentElement.querySelector('.catalog-main-media-target'); /* Shopify component multi-image shifting logic handles this natively fallback */">&#10094;</button>
-                                            <button type="button" class="card-nav-arrow arrow-right" aria-label="Next image" 
-                                                onclick="event.stopPropagation(); var media = this.parentElement.querySelector('.catalog-main-media-target');">&#10095;</button>
                                         </div>
 
-                                        <h3 class="product-title" style="margin-top: 1rem; cursor: pointer;"><shopify-data
-                                                query="product.title"></shopify-data></h3>
-                                        <p class="product-price" style="margin-bottom: 1rem; cursor: pointer;"><shopify-money
-                                                query="product.selectedOrFirstAvailableVariant.price"></shopify-money>
-                                        </p>
-
-                                        <button shopify-attr--data-handle="product.handle"
-                                            shopify-attr--disabled="!product.selectedOrFirstAvailableVariant.availableForSale"
-                                            onclick="event.stopPropagation(); window.location.href = 'product.html?handle=' + this.getAttribute('data-handle')"
-                                            class="btn btn--dark product-card__buy-btn">
-                                            <span></span><span></span><span></span><span></span><span></span>
-                                            <span>Buy Now</span>
-                                        </button>
+                                        <div class="product-card__meta-details">
+                                            <span class="product-card__category"><shopify-data query="product.vendor"></shopify-data></span>
+                                            <h3 class="product-card__title"><shopify-data query="product.title"></shopify-data></h3>
+                                            <p class="product-card__price"><shopify-money query="product.selectedOrFirstAvailableVariant.price"></shopify-money></p>
+                                        </div>
                                     </div>
                                 </template>
                             </shopify-list-context>
                         </div>
-                        <style>
-                            .product-card:hover .product-image-wrapper button {
-                                opacity: 1 !important;
-                            }
-                        </style>
                     </div>
+
                 </div>
             </section>
         </main>

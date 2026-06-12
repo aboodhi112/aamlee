@@ -884,10 +884,6 @@ h6 {
   text-align: center;
 }
 
-.product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-soft);
-}
 
 .product-image-wrapper {
   position: relative;
@@ -904,9 +900,6 @@ h6 {
   transition: transform 0.8s ease;
 }
 
-.product-card:hover .product-image-wrapper img {
-  transform: scale(1.05);
-}
 
 .product-title {
   font-family: var(--font-display);
@@ -951,10 +944,6 @@ h6 {
   }
 }
 
-.product-card:hover .btn {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
 
 /* Quote Strip */
 .quote-strip {
@@ -2055,22 +2044,12 @@ body {
 }
 
 /* Elite Hover Animations */
-.custom-luxury-btn:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 24px rgba(33, 7, 8, 0.15);
-  border-color: var(--gold-deep) !important;
-}
 
-/* Dynamic Pressed Click Effect */
-.custom-luxury-btn:active {
-  transform: translateY(1px) scale(0.99);
-  transition: all 0.1s ease !important;
-}
+
+
 
 /* Sync text color states when bubble triggers fill updates */
-.custom-luxury-btn:hover span:last-child {
-  color: var(--bg-cream) !important;
-}
+
 .add-to-cart-wide-btn:hover span:last-child {
   color: var(--gold-soft) !important;
 }
@@ -2175,15 +2154,8 @@ body {
   z-index: 5 !important;
 }
 
-/* Elegant low-profile luxury scale just for the card frame on hover */
-#related-catalog-grid .product-card:hover .btn {
-  border-color: var(--gold-deep) !important;
-  background-color: var(--text-dark) !important;
-}
 
-#related-catalog-grid .product-card:hover .btn span:last-child {
-  color: var(--bg-cream) !important;
-}
+
 /* --- Mobile View: Compact 2-Column Recommendations Grid --- */
 @media (max-width: 768px) {
   #related-catalog-grid {
@@ -2282,10 +2254,9 @@ body {
 
 /* Desktop Interaction: Reveal Navigation Dots/Arrows smoothly on Card Hover */
 @media (min-width: 769px) {
-  .dynamic-clickable-card:hover .card-nav-arrow {
-    opacity: 1;
-    transform: translateY(-50%) scale(1);
-  }
+ .dynamic-clickable-card:hover .card-nav-arrow {
+    opacity: 1 !important;
+    transform: translateY(-50%) !important;
 }
 
 /* Mobile View Adjustments: Permanently reveal lower profile controls for touch targets */
@@ -2471,11 +2442,7 @@ body {
   transition: transform 0.35s ease, box-shadow 0.35s ease !important; /* Brings back card animation transitions */
 }
 
-/* Brings back the elegant lift-up animation when hovering over a card */
-.product-card:hover {
-  transform: translateY(-6px) !important;
-  box-shadow: var(--shadow-soft) !important;
-}
+
 
 /* Restores the inner image spacing structure box */
 .product-image-wrapper {
@@ -2490,10 +2457,7 @@ body {
   transition: transform 0.8s ease !important;
 }
 
-/* Brings back the subtle image zoom effect when hovering over the card */
-.product-card:hover .product-image-wrapper img {
-  transform: scale(1.05) !important;
-}
+
 
 .product-card__meta-details {
   padding: 0 1.25rem !important;       
@@ -2672,4 +2636,141 @@ body {
   }
   .slider-nav-btn { display: none !important; } /* Lets touch swipe naturally on mobile screens */
   .featured-row-carousel { scrollbar-width: none !important; }
+}
+/* ==========================================================
+   PRODUCT CARD HOVER STABILITY FIX
+   ========================================================== */
+
+.product-card,
+.dynamic-clickable-card {
+    position: relative;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: auto;
+    transition:
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+}
+
+/* NO CARD MOVEMENT */
+.product-card:hover,
+.dynamic-clickable-card:hover {
+    transform: none !important;
+}
+
+/* IMAGE STAYS STABLE */
+.product-image-wrapper img,
+.catalog-main-media-target,
+shopify-media {
+    transform: none !important;
+    transition: opacity 0.25s ease !important;
+}
+
+.product-card:hover .product-image-wrapper img {
+    transform: none !important;
+}
+
+/* BUTTON STAYS STABLE */
+.product-card:hover .btn,
+.product-card:hover .product-card__buy-btn {
+    transform: none !important;
+}
+
+/* REMOVE BUTTON JUMP */
+.custom-luxury-btn {
+    transform: none !important;
+    transition:
+        border-color 0.3s ease,
+        background-color 0.3s ease,
+        box-shadow 0.3s ease !important;
+}
+
+.custom-luxury-btn:hover {
+    transform: none !important;
+    border-color: var(--gold-deep) !important;
+    box-shadow: 0 8px 20px rgba(33,7,8,.12);
+}
+
+.custom-luxury-btn:active {
+    transform: none !important;
+    opacity: 0.95;
+}
+
+/* ARROWS STAY FIXED */
+.card-nav-arrow {
+    transform: translateY(-50%) !important;
+    transition:
+        opacity 0.3s ease,
+        background-color 0.3s ease,
+        color 0.3s ease !important;
+}
+
+.dynamic-clickable-card:hover .card-nav-arrow {
+    opacity: 1 !important;
+    transform: translateY(-50%) !important;
+}
+
+/* SHOPIFY MEDIA FIX */
+shopify-media,
+shopify-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* GPU FIX */
+.product-card *,
+.dynamic-clickable-card * {
+    backface-visibility: hidden;
+}
+.product-card {
+  transition: box-shadow 0.35s ease !important;
+}
+
+/* ===================================
+   LUXURY PRODUCT CARD HOVER EFFECT
+   =================================== */
+
+.product-card {
+    transition:
+        transform 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+        box-shadow 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+        border-color 0.35s ease !important;
+}
+
+.product-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 24px 50px rgba(20, 4, 4, 0.15) !important;
+    border-color: rgba(198,160,106,0.25) !important;
+}
+
+.product-image-wrapper {
+    overflow: hidden !important;
+}
+
+.product-image-wrapper img {
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.product-card:hover .product-image-wrapper img {
+    transform: scale(1.06) !important;
+}
+
+/* Title Accent */
+.product-card__title {
+    transition: color 0.3s ease !important;
+}
+
+.product-card:hover .product-card__title {
+    color: var(--gold-deep) !important;
+}
+
+/* Price Accent */
+.product-card__price {
+    transition: color 0.3s ease !important;
+}
+
+.product-card:hover .product-card__price {
+    color: var(--gold-deep) !important;
+}
 }

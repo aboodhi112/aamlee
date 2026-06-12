@@ -570,6 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 3. Central routing filter and card visibility sorting mechanism
+        // 3. Central routing filter and card visibility sorting mechanism
         const syncCatalog = () => {
             if (!isMapLoaded) return false;
 
@@ -597,17 +598,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const handle = card.getAttribute('data-handle') || '';
                 
                 const matchesSearch = !query || title.includes(query);
-                
-                // Read lowercase handles safely out of our synced data matrix
                 const linkedCollections = productCollectionMap[handle] || [];
                 const matchesCollection = activeCollectionFilter === 'all' || linkedCollections.includes(activeCollectionFilter);
 
                 const shouldShow = matchesSearch && matchesCollection;
                 
+                // FIXED: We now use clean toggle classes instead of wiping out 'style' attributes 
+                // every 300ms, which was breaking the CSS hover transitions and causing the rapid jumping.
                 if (shouldShow) {
-                    card.removeAttribute('style');
-                    card.style.display = 'block';
-                    card.style.visibility = 'visible';
+                    if (card.style.display === 'none') {
+                        card.style.display = '';
+                    }
                     card.hidden = false;
                     card.classList.remove('js-hide-card');
                 } else {
@@ -651,12 +652,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         searchInput.addEventListener('input', syncCatalog);
         sortSelect.addEventListener('change', syncCatalog);
-
-        const waitForProducts = window.setInterval(() => {
-            if (syncCatalog()) {
-                syncCatalog();
-            }
-        }, 300);
+        syncCatalog();
+        let initialized = false;
     }
 
     // --- Live Grid Multi-Image Arrow Rotation Engine ---

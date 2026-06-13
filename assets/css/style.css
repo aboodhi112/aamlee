@@ -2774,3 +2774,82 @@ shopify-media img {
     color: var(--gold-deep) !important;
 }
 }
+/* ===================================
+   MOBILE FEATURED COLLECTION ROW
+   =================================== */
+
+@media (max-width: 768px) {
+
+  #featured-products-row,
+  .featured-row-carousel {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 1rem !important;
+    padding-bottom: 1rem !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #featured-products-row .product-card,
+  .featured-row-carousel .product-card {
+    flex: 0 0 220px !important;
+    width: 220px !important;
+    min-width: 220px !important;
+    scroll-snap-align: start;
+  }
+
+  #featured-products-row::-webkit-scrollbar,
+  .featured-row-carousel::-webkit-scrollbar {
+    display: none;
+  }
+}
+.featured-row-carousel .product-card,
+#featured-products-row .product-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+}
+
+.product-card__meta-details {
+    flex: 1 !important;
+}
+
+.product-card__title {
+    min-height: 72px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+/* FIX PRODUCT VARIANTS ON MOBILE */
+@media (max-width: 768px) {
+
+  shopify-variant-selector {
+    width: 100% !important;
+  }
+
+  shopify-variant-selector::part(form) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+  }
+
+  shopify-variant-selector::part(radio-group) {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  shopify-variant-selector::part(radio-label),
+  shopify-variant-selector::part(color-swatch) {
+    margin: 0 !important;
+  }
+}

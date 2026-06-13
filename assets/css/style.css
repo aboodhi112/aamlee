@@ -1824,22 +1824,89 @@ body {
 
 /* Mobile UX Adjustments: Hide sidebars and make buttons static */
 /* --- Mobile View Adjustments --- */
+/* --- Mobile View Adjustments --- */
 @media (max-width: 768px) {
-  /* Hide the 'Browse' and 'Need Help?' sidebar boxes */
-  .shop-aside-card {
+  
+  /* 1. Hide ONLY the 'Need Help?' card so it doesn't clutter mobile */
+  .sidebar .shop-aside-card:last-child {
     display: none !important;
   }
 
-  /* Force the Buy Now button to sit flat and look perfectly aligned under text details */
- /* Force the Buy Now button to sit flat and contain its bubble animations */
-  .product-card__buy-btn {
-    opacity: 1 !important;
-    transform: none !important;
-    position: relative !important; /* This is the anchor that traps the bubbles inside the button borders! */
-    overflow: hidden !important;   /* Cuts off any bubble scaling outside the button edges */
-    width: 90% !important;
-    margin: 0.75rem auto 0 auto !important;
-    display: inline-flex !important;
+  /* 2. Reveal the 'Collections' filter card safely */
+  .sidebar .shop-aside-card:first-child {
+    display: block !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+    width: 100%;
+  }
+
+  /* 3. Hide the bulky h3 titles and text paragraphs on mobile */
+  .sidebar h3, 
+  .sidebar .shop-aside-card:first-child p {
+    display: none !important;
+  }
+
+  /* 4. Transform the list into a premium horizontal swipe menu */
+  #dynamic-collection-menu {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    gap: 0.5rem !important;
+    padding: 0.5rem 1rem !important;
+    margin: 0 !important;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%); /* Forces the row to bleed beautifully edge-to-edge */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Conceals scrollbar on Firefox */
+  }
+
+  #dynamic-collection-menu::-webkit-scrollbar {
+    display: none; /* Conceals scrollbar on Chrome/Safari */
+  }
+
+  #dynamic-collection-menu li {
+    margin-bottom: 0 !important;
+    display: inline-block !important;
+  }
+
+  /* 5. Turn links into luxury filter chips/pills */
+  .collection-filter-btn {
+    background: var(--bg-cream-2) !important;
+    border: 1px solid var(--border-dark) !important;
+    padding: 0.5rem 1.25rem !important;
+    border-radius: 40px !important;
+    font-size: 0.8rem !important;
+    letter-spacing: 0.05em !important;
+    transition: all 0.3s ease !important;
+  }
+
+  /* 6. Active/Selected chip state matching your luxury gold palette */
+  .collection-filter-btn.active {
+    background: var(--bg-dark) !important;
+    color: var(--text-light) !important;
+    border-color: var(--bg-dark) !important;
+    padding-left: 1.25rem !important; /* Overrides the desktop slide padding */
+    font-weight: 500 !important;
+  }
+}
+/* Fix grid layout ordering so sidebar stays on top of catalog on mobile */
+@media (max-width: 1023px) {
+  .shop-layout > .container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+
+  .sidebar {
+    display: block !important;
+    width: 100% !important;
+    order: 1 !important;
+  }
+
+  .shop-main {
+    order: 2 !important;
   }
 }
 

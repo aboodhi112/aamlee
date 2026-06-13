@@ -6,11 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileDrawer = document.getElementById('mobile-drawer');
 
     function syncScrollLock() {
-        const drawerOpen = mobileDrawer && mobileDrawer.classList.contains('is-open');
-        const searchOpen = searchModal && searchModal.open;
-        const imageOpen = document.getElementById('image-modal')?.open; // Add this line
-        body.style.overflow = drawerOpen || searchOpen || imageOpen ? 'hidden' : ''; // Update this line
-    }
+    const drawerOpen = mobileDrawer && mobileDrawer.classList.contains('is-open');
+    // Read direct native modal status instead of relying on custom state flags
+    const searchOpen = searchModal && searchModal.hasAttribute('open');
+    const imageOpen = document.getElementById('image-modal')?.hasAttribute('open');
+    
+    body.style.overflow = drawerOpen || searchOpen || imageOpen ? 'hidden' : '';
+}
 
     function sanitizeHandle(handle) {
         return /^[a-z0-9-]+$/i.test(handle || '') ? handle : 'lumiere-ring';
@@ -102,113 +104,171 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initSearchModal() {
-        if (!searchModal) return;
+    if (!searchModal) return;
 
-        const searchInput = document.getElementById('search-input');
-        const searchResults = document.getElementById('search-results');
-        const searchEmpty = document.getElementById('search-empty');
-        const searchClose = document.getElementById('search-close');
-        const searchForm = document.getElementById('search-form');
-        const featuredLinks = Array.from(document.querySelectorAll('[data-search-index]')).map((node) => ({
-            title: node.getAttribute('data-search-title') || node.textContent.trim(),
-            href: node.getAttribute('href') || '#',
-            meta: node.getAttribute('data-search-meta') || 'Page'
-        }));
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    const searchEmpty = document.getElementById('search-empty');
+    const searchClose = document.getElementById('search-close');
+    const searchForm = document.getElementById('search-form');
+    
+    let debounceTimer = null;
 
-        const baseIndex = [
-            { title: 'Home', href: 'index.html', meta: 'Page' },
-            { title: 'Shop', href: 'shop.html', meta: 'Products' },
-            { title: 'Collections', href: 'collections.html', meta: 'Page' },
-            { title: 'About', href: 'about.html', meta: 'Page' },
-            { title: 'Contact', href: 'contact.html', meta: 'Support' },
-            { title: 'Lumiere Ring', href: 'product.html?handle=lumiere-ring', meta: 'Product' }
-        ];
+    // Static pages search index fallback
+    const staticPages = [
+        { title: 'Home', href: 'index.html', meta: 'Page' },
+        { title: 'Shop All Jewelry', href: 'shop.html', meta: 'Collection' },
+        { title: 'Collections Hub', href: 'collections.html', meta: 'Page' },
+        { title: 'About Us', href: 'about.html', meta: 'Page' },
+        { title: 'Contact Support', href: 'contact.html', meta: 'Support' }
+    ];
 
-        const seen = new Set();
-        const searchIndex = [...baseIndex, ...featuredLinks].filter((item) => {
-            const key = `${item.title}|${item.href}`;
-            if (seen.has(key)) return false;
-            seen.add(key);
-            return true;
-        });
+    function openSearchModal() {
+        if (searchModal.open) return;
+        searchModal.showModal();
+        syncScrollLock();
+        window.setTimeout(() => {
+            if (searchInput) searchInput.focus();
+        }, 50);
+        renderSearchResults(searchInput ? searchInput.value.trim() : '');
+    }
 
-        function openSearchModal() {
-            if (searchModal.open) return;
-            searchModal.showModal();
-            syncScrollLock();
-            window.setTimeout(() => {
-                if (searchInput) searchInput.focus();
-            }, 50);
-            renderSearchResults(searchInput ? searchInput.value.trim() : '');
+    function closeSearchModal() {
+        searchModal.close();
+    }
+
+    function renderSearchResults(rawQuery) {
+        if (!searchResults || !searchEmpty) return;
+
+        const query = rawQuery.trim().toLowerCase();
+        if (!query) {
+            searchResults.innerHTML = '';
+            searchEmpty.hidden = false;
+            return;
         }
 
-        function closeSearchModal() {
-            searchModal.close();
-        }
+        // 1. Immediately display matching static pages so the menu feels instant
+        const staticMatches = staticPages.filter(item => 
+            item.title.toLowerCase().includes(query)
+        );
 
-        function renderSearchResults(rawQuery) {
-            if (!searchResults || !searchEmpty) return;
+        // Clear previous debounce timer to optimize network performance
+        window.clearTimeout(debounceTimer);
 
-            const query = rawQuery.trim().toLowerCase();
-            if (!query) {
-                searchResults.innerHTML = '';
-                searchEmpty.hidden = false;
-                return;
-            }
+        // 2. Set up a 250ms debounce before hitting the Shopify API
+        debounceTimer = window.setTimeout(() => {
+            fetch(`https://${storeDomain}/api/2024-01/graphql.json`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Shopify-Storefront-Access-Token': storefrontToken
+                },
+                body: JSON.stringify({
+                    query: `
+                    query predictiveSearch($searchTerm: String!) {
+                        products(first: 5, query: $searchTerm) {
+                            edges {
+                                node {
+                                    title
+                                    handle
+                                    vendor
+                                    images(first: 1) {
+                                        edges {
+                                            node {
+                                                url
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }`,
+                    variables: { searchTerm: `title:${query}*` }
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const liveProducts = data?.data?.products?.edges || [];
+                
+                // Map API results into dynamic layouts
+                const productMatches = liveProducts.map(edge => {
+                    const imgUrl = edge.node.images.edges[0]?.node?.url || 'assets/images/favicon.png';
+                    return `
+                        <a class="search-result" href="product.html?handle=${edge.node.handle}" style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem;">
+                            <img src="${imgUrl}" alt="${escapeHtml(edge.node.title)}" style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px; background: var(--bg-cream-2);">
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="search-result__meta" style="margin: 0;">${escapeHtml(edge.node.vendor)}</span>
+                                <span class="search-result__title" style="font-size: 1.1rem; margin: 0;">${escapeHtml(edge.node.title)}</span>
+                            </div>
+                        </a>
+                    `;
+                });
 
-            const matches = searchIndex.filter((item) => {
-                const haystack = `${item.title} ${item.meta}`.toLowerCase();
-                return haystack.includes(query);
-            }).slice(0, 6);
+                const pageMatchesHtml = staticMatches.map(item => `
+                    <a class="search-result" href="${item.href}">
+                        <span class="search-result__meta">${escapeHtml(item.meta)}</span>
+                        <span class="search-result__title">${escapeHtml(item.title)}</span>
+                    </a>
+                `);
 
-            const shopLink = {
-                title: `Search shop for "${rawQuery.trim()}"`,
-                href: `shop.html?query=${encodeURIComponent(rawQuery.trim())}`,
-                meta: 'Catalog'
-            };
+                const viewAllLink = `
+                    <a class="search-result" href="shop.html?query=${encodeURIComponent(rawQuery.trim())}" style="background: var(--bg-cream-2); text-align: center; font-weight: 500;">
+                        <span class="search-result__title" style="color: var(--gold-deep); font-size: 0.95rem;">View All Results For "${escapeHtml(rawQuery.trim())}" →</span>
+                    </a>
+                `;
 
-            const results = [shopLink, ...matches];
-            searchResults.innerHTML = results.map((item) => `
-                <a class="search-result" href="${item.href}">
-                    <span class="search-result__meta">${escapeHtml(item.meta)}</span>
-                    <span class="search-result__title">${escapeHtml(item.title)}</span>
-                </a>
-            `).join('');
-            searchEmpty.hidden = true;
-        }
-
-        window.openSearchModal = openSearchModal;
-        window.closeSearchModal = closeSearchModal;
-
-        if (searchInput) {
-            searchInput.addEventListener('input', (event) => {
-                renderSearchResults(event.target.value);
+                // Render compiled dynamic + static array markup
+                const combinedResults = [...pageMatchesHtml, ...productMatches];
+                
+                if (combinedResults.length > 0) {
+                    searchResults.innerHTML = combinedResults.join('') + viewAllLink;
+                } else {
+                    searchResults.innerHTML = `
+                        <div style="padding: 2rem; text-align: center; color: var(--text-muted-dark); font-family: var(--font-body); font-size: 0.9rem;">
+                            No structural design matches found for "${escapeHtml(rawQuery.trim())}"
+                        </div>
+                    `;
+                }
+                searchEmpty.hidden = true;
+            })
+            .catch(err => {
+                console.error("Predictive search runtime failure:", err);
             });
-        }
+        }, 250);
+    }
 
-        if (searchClose) searchClose.addEventListener('click', closeSearchModal);
-        if (searchForm) {
-            searchForm.addEventListener('submit', (event) => {
-                event.preventDefault();
-                const query = searchInput ? searchInput.value.trim() : '';
-                window.location.href = query ? `shop.html?query=${encodeURIComponent(query)}` : 'shop.html';
-            });
-        }
+    window.openSearchModal = openSearchModal;
+    window.closeSearchModal = closeSearchModal;
 
-        searchModal.addEventListener('click', (event) => {
-            const bounds = searchModal.getBoundingClientRect();
-            const isBackdropClick =
-                event.clientX < bounds.left ||
-                event.clientX > bounds.right ||
-                event.clientY < bounds.top ||
-                event.clientY > bounds.bottom;
-            if (isBackdropClick) closeSearchModal();
-        });
-
-        searchModal.addEventListener('close', () => {
-            syncScrollLock();
+    if (searchInput) {
+        searchInput.addEventListener('input', (event) => {
+            renderSearchResults(event.target.value);
         });
     }
+
+    if (searchClose) searchClose.addEventListener('click', closeSearchModal);
+    if (searchForm) {
+        searchForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const query = searchInput ? searchInput.value.trim() : '';
+            window.location.href = query ? `shop.html?query=${encodeURIComponent(query)}` : 'shop.html';
+        });
+    }
+
+    searchModal.addEventListener('click', (event) => {
+        const bounds = searchModal.getBoundingClientRect();
+        const isBackdropClick =
+            event.clientX < bounds.left ||
+            event.clientX > bounds.right ||
+            event.clientY < bounds.top ||
+            event.clientY > bounds.bottom;
+        if (isBackdropClick) closeSearchModal();
+    });
+
+    searchModal.addEventListener('close', () => {
+        syncScrollLock();
+    });
+}
 
     function initRevealAnimations() {
         const revealElements = document.querySelectorAll('.reveal');
@@ -472,189 +532,203 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initShopCatalog() {
-        const catalog = document.getElementById('shop-catalog');
-        const sortSelect = document.getElementById('sort');
-        const searchInput = document.getElementById('shop-search');
-        const countLabel = document.getElementById('product-count');
-        const menuContainer = document.getElementById('dynamic-collection-menu');
-        
-        if (!catalog || !sortSelect || !searchInput || !countLabel) return;
+    const catalog = document.getElementById('shop-catalog');
+    const sortSelect = document.getElementById('sort');
+    const searchInput = document.getElementById('shop-search');
+    const countLabel = document.getElementById('product-count');
+    const menuContainer = document.getElementById('dynamic-collection-menu');
+    
+    if (!catalog || !sortSelect || !searchInput || !countLabel) return;
 
-        const internalDomain = '2p1s8f-yx.myshopify.com';
-        const internalToken = '730fb496b29ebd0c38574b927925f703';
+    const internalDomain = '2p1s8f-yx.myshopify.com';
+    const internalToken = '730fb496b29ebd0c38574b927925f703';
 
-        let activeCollectionFilter = 'all';
-        let productCollectionMap = {};
-        let isMapLoaded = false;
+    let activeCollectionFilter = 'all';
+    let productCollectionMap = {};
+    let isMapLoaded = false;
 
-        // --- DEEP LINK ROUTER CATCH: Instantly read homepage parameters on load ---
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlCollection = urlParams.get('collection');
-        if (urlCollection) {
-            // CRITICAL FIX: Force the incoming handle to lowercase to match Shopify API outputs
-            activeCollectionFilter = urlCollection.trim().toLowerCase();
-            
-            // Highlights the correct active state sidebar element once rendered
-            window.setTimeout(() => {
-                const sidebarTarget = document.querySelector(`[data-collection-handle="${activeCollectionFilter}"]`);
-                if (sidebarTarget) {
-                    document.querySelectorAll('.collection-filter-btn').forEach(btn => btn.classList.remove('active'));
-                    sidebarTarget.classList.add('active');
-                }
-            }, 350);
-        }
+    // ── OPTIMIZATION: Read incoming deep-link parameters instantly on page load ──
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlCollection = urlParams.get('collection');
+    const urlQuery = urlParams.get('query');
 
-        // 1. Fetch backend product-to-collection relationships securely via GraphQL
-        fetch(`https://${internalDomain}/api/2024-01/graphql.json`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Shopify-Storefront-Access-Token': internalToken
-            },
-            body: JSON.stringify({
-                query: `
-                query {
-                    products(first: 50) {
-                        edges {
-                            node {
-                                handle
-                                collections(first: 5) {
-                                    edges {
-                                        node {
-                                            handle
-                                        }
+    if (urlCollection) {
+        activeCollectionFilter = urlCollection.trim().toLowerCase();
+        window.setTimeout(() => {
+            const sidebarTarget = document.querySelector(`[data-collection-handle="${activeCollectionFilter}"]`);
+            if (sidebarTarget) {
+                document.querySelectorAll('.collection-filter-btn').forEach(btn => btn.classList.remove('active'));
+                sidebarTarget.classList.add('active');
+            }
+        }, 350);
+    }
+
+    if (urlQuery) {
+        searchInput.value = decodeURIComponent(urlQuery.trim());
+    }
+
+    // 1. Fetch backend product-to-collection relationships securely via GraphQL
+    fetch(`https://${internalDomain}/api/2024-01/graphql.json`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Shopify-Storefront-Access-Token': internalToken
+        },
+        body: JSON.stringify({
+            query: `
+            query {
+                products(first: 50) {
+                    edges {
+                        node {
+                            handle
+                            collections(first: 5) {
+                                edges {
+                                    node {
+                                        handle
                                     }
                                 }
                             }
                         }
                     }
-                }`
-            })
+                }
+            }`
         })
-        .then(res => res.json())
-        .then(data => {
-            const products = data?.data?.products?.edges || [];
-            products.forEach(edge => {
-                const p = edge.node;
-                productCollectionMap[p.handle] = p.collections.edges.map(e => e.node.handle.toLowerCase());
-            });
+    })
+    .then(res => res.json())
+    .then(data => {
+        const products = data?.data?.products?.edges || [];
+        products.forEach(edge => {
+            const p = edge.node;
+            productCollectionMap[p.handle] = p.collections.edges.map(e => e.node.handle.toLowerCase());
+        });
+        
+        isMapLoaded = true; // Unlock engine now that mapping data exists!
+        syncCatalog();
+        bindFilterEvents();
+    })
+    .catch(err => {
+        console.error("Collection engine layout fault:", err);
+        isMapLoaded = true;
+        syncCatalog();
+    });
+
+    // 2. Bind click listeners to the collection sidebar links
+    function bindFilterEvents() {
+        if (!menuContainer) return;
+        
+        menuContainer.addEventListener('click', (e) => {
+            const filterBtn = e.target.closest('.collection-filter-btn');
+            if (!filterBtn) return;
             
-            isMapLoaded = true; // Unlock engine now that mapping data exists!
+            e.preventDefault();
+            activeCollectionFilter = (filterBtn.getAttribute('data-collection-handle') || 'all').toLowerCase();
+            
+            document.querySelectorAll('.collection-filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            filterBtn.classList.add('active');
+            
+            // OPTIMIZATION: If user selects a specific collection collection chip, clear out 
+            // any keyword strings from the main search bar to prevent zero-result layout locks.
+            if (searchInput.value !== '') {
+                searchInput.value = '';
+                // Cleanly update URL address bar without causing a heavy page refresh
+                const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?collection=${activeCollectionFilter}`;
+                window.history.pushState({ path: cleanUrl }, '', cleanUrl);
+            }
+            
             syncCatalog();
-            bindFilterEvents();
-        })
-        .catch(err => {
-            console.error("Collection engine layout fault:", err);
-            isMapLoaded = true;
+        });
+    }
+
+    // 3. Central routing filter and card visibility sorting mechanism
+    const syncCatalog = () => {
+        if (!isMapLoaded) return false;
+
+        const allCards = Array.from(catalog.querySelectorAll('.product-card[data-handle]'));
+        if (!allCards.length) return false;
+
+        const seenHandles = new Set();
+        const cards = [];
+
+        allCards.forEach(card => {
+            const handle = card.getAttribute('data-handle');
+            if (!seenHandles.has(handle)) {
+                seenHandles.add(handle);
+                cards.push(card);
+            } else {
+                card.remove(); 
+            }
         });
 
-        // 2. Bind click listeners to the dynamically generated collection sidebar links
-        function bindFilterEvents() {
-            if (!menuContainer) return;
+        const query = searchInput.value.trim().toLowerCase();
+        const sortValue = sortSelect.value;
+
+        const filtered = cards.filter((card) => {
+            const title = (card.getAttribute('shopify-attr--data-title') || card.dataset.title || card.querySelector('.product-card__title')?.textContent || '').toLowerCase();
+            const handle = card.getAttribute('data-handle') || '';
             
-            menuContainer.addEventListener('click', (e) => {
-                const filterBtn = e.target.closest('.collection-filter-btn');
-                if (!filterBtn) return;
-                
-                e.preventDefault();
-                // Force lowercase matching on manual clicks as well
-                activeCollectionFilter = (filterBtn.getAttribute('data-collection-handle') || 'all').toLowerCase();
-                
-                document.querySelectorAll('.collection-filter-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                filterBtn.classList.add('active');
-                
-                syncCatalog();
+            const matchesSearch = !query || title.includes(query);
+            const linkedCollections = productCollectionMap[handle] || [];
+            const matchesCollection = activeCollectionFilter === 'all' || linkedCollections.includes(activeCollectionFilter);
+
+            const shouldShow = matchesSearch && matchesCollection;
+            
+            if (shouldShow) {
+                if (card.style.display === 'none') card.style.display = '';
+                card.hidden = false;
+                card.classList.remove('js-hide-card');
+            } else {
+                card.style.setProperty('display', 'none', 'important');
+                card.hidden = true;
+                card.classList.add('js-hide-card');
+            }
+            
+            return shouldShow;
+        });
+
+        // Sort products dynamically
+        const sorted = [...filtered].sort((left, right) => {
+            const leftPrice = Number(left.getAttribute('shopify-attr--data-price') || left.dataset.price || 0);
+            const rightPrice = Number(right.getAttribute('shopify-attr--data-price') || right.dataset.price || 0);
+            const leftTitle = (left.getAttribute('shopify-attr--data-title') || left.dataset.title || '');
+            const rightTitle = (right.getAttribute('shopify-attr--data-title') || right.dataset.title || '');
+
+            switch (sortValue) {
+                case 'price-asc': return leftPrice - rightPrice;
+                case 'price-desc': return rightPrice - leftPrice;
+                case 'title-asc': return leftTitle.localeCompare(rightTitle);
+                default: return 0;
+            }
+        });
+
+        if (sortValue === 'default') {
+            sorted.sort((left, right) => {
+                const hLeft = left.getAttribute('data-handle') || '';
+                const hRight = right.getAttribute('data-handle') || '';
+                const colA = (productCollectionMap[hLeft] || []).join(',');
+                const colB = (productCollectionMap[hRight] || []).join(',');
+                return colA.localeCompare(colB);
             });
         }
 
-        // 3. Central routing filter and card visibility sorting mechanism
-        // 3. Central routing filter and card visibility sorting mechanism
-        const syncCatalog = () => {
-            if (!isMapLoaded) return false;
+        sorted.forEach((card) => catalog.appendChild(card));
+        countLabel.textContent = `${filtered.length} product${filtered.length === 1 ? '' : 's'}`;
+        return true;
+    };
 
-            const allCards = Array.from(catalog.querySelectorAll('.product-card[data-handle]'));
-            if (!allCards.length) return false;
-
-            const seenHandles = new Set();
-            const cards = [];
-
-            allCards.forEach(card => {
-                const handle = card.getAttribute('data-handle');
-                if (!seenHandles.has(handle)) {
-                    seenHandles.add(handle);
-                    cards.push(card);
-                } else {
-                    card.remove(); 
-                }
-            });
-
-            const query = searchInput.value.trim().toLowerCase();
-            const sortValue = sortSelect.value;
-
-            const filtered = cards.filter((card) => {
-                const title = (card.getAttribute('shopify-attr--data-title') || card.dataset.title || card.querySelector('.product-card__title')?.textContent || '').toLowerCase();
-                const handle = card.getAttribute('data-handle') || '';
-                
-                const matchesSearch = !query || title.includes(query);
-                const linkedCollections = productCollectionMap[handle] || [];
-                const matchesCollection = activeCollectionFilter === 'all' || linkedCollections.includes(activeCollectionFilter);
-
-                const shouldShow = matchesSearch && matchesCollection;
-                
-                // FIXED: We now use clean toggle classes instead of wiping out 'style' attributes 
-                // every 300ms, which was breaking the CSS hover transitions and causing the rapid jumping.
-                if (shouldShow) {
-                    if (card.style.display === 'none') {
-                        card.style.display = '';
-                    }
-                    card.hidden = false;
-                    card.classList.remove('js-hide-card');
-                } else {
-                    card.style.setProperty('display', 'none', 'important');
-                    card.hidden = true;
-                    card.classList.add('js-hide-card');
-                }
-                
-                return shouldShow;
-            });
-
-            // Sort products by price or alphabet
-            const sorted = [...filtered].sort((left, right) => {
-                const leftPrice = Number(left.getAttribute('shopify-attr--data-price') || left.dataset.price || 0);
-                const rightPrice = Number(right.getAttribute('shopify-attr--data-price') || right.dataset.price || 0);
-                const leftTitle = (left.getAttribute('shopify-attr--data-title') || left.dataset.title || '');
-                const rightTitle = (right.getAttribute('shopify-attr--data-title') || right.dataset.title || '');
-
-                switch (sortValue) {
-                    case 'price-asc': return leftPrice - rightPrice;
-                    case 'price-desc': return rightPrice - leftPrice;
-                    case 'title-asc': return leftTitle.localeCompare(rightTitle);
-                    default: return 0;
-                }
-            });
-
-            if (sortValue === 'default') {
-                sorted.sort((left, right) => {
-                    const hLeft = left.getAttribute('data-handle') || '';
-                    const hRight = right.getAttribute('data-handle') || '';
-                    const colA = (productCollectionMap[hLeft] || []).join(',');
-                    const colB = (productCollectionMap[hRight] || []).join(',');
-                    return colA.localeCompare(colB);
-                });
-            }
-
-            sorted.forEach((card) => catalog.appendChild(card));
-            countLabel.textContent = `${filtered.length} product${filtered.length === 1 ? '' : 's'}`;
-            return true;
-        };
-
-        searchInput.addEventListener('input', syncCatalog);
-        sortSelect.addEventListener('change', syncCatalog);
+    // OPTIMIZATION: If user manually clears input field, scrub parameters out of active URL
+    searchInput.addEventListener('input', () => {
+        if (searchInput.value.trim() === '') {
+            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + (activeCollectionFilter !== 'all' ? `?collection=${activeCollectionFilter}` : '');
+            window.history.pushState({ path: cleanUrl }, '', cleanUrl);
+        }
         syncCatalog();
-        let initialized = false;
-    }
+    });
+
+    sortSelect.addEventListener('change', syncCatalog);
+    syncCatalog();
+}
 
     // --- Live Grid Multi-Image Arrow Rotation Engine ---
     document.addEventListener('click', (e) => {

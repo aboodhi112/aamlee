@@ -1922,10 +1922,22 @@ body {
 /* Minimize the main product image size on mobile */
 @media (max-width: 768px) {
   .product-gallery {
-    max-width: 320px;
-    /* Limits the size so it doesn't take over the screen */
-    margin: 0 auto;
-    /* Keeps the image and thumbnails perfectly centered */
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .gallery-main {
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: auto !important;
+  }
+
+  .gallery-main shopify-media,
+  .gallery-main img {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: cover !important;
   }
 }
 

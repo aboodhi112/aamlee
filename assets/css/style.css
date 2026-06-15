@@ -1920,17 +1920,38 @@ body {
 }
 
 /* Minimize the main product image size on mobile */
+/* ==========================================
+   FULL WIDTH MOBILE PRODUCT GALLERY
+   ========================================== */
 @media (max-width: 768px) {
-  .product-gallery {
-    max-width: 100% !important;
+
+  /* Remove container padding around image */
+  .product-detail-section {
+    padding: 0 !important;
+  }
+
+  .product-detail-section .container {
     width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .product-detail-grid {
+    gap: 1.5rem !important;
+  }
+
+  /* Full-width gallery */
+  .product-gallery {
+    width: 100vw !important;
+    max-width: 100vw !important;
     margin: 0 !important;
   }
 
   .gallery-main {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
     aspect-ratio: auto !important;
+    border-radius: 0 !important;
   }
 
   .gallery-main shopify-media,
@@ -1938,6 +1959,24 @@ body {
     width: 100% !important;
     height: auto !important;
     object-fit: cover !important;
+    border-radius: 0 !important;
+  }
+
+  /* Thumbnails */
+  .gallery-thumbs {
+    padding: 0 16px !important;
+    margin-top: 12px !important;
+    gap: 10px !important;
+  }
+
+  /* Product details section */
+  .product-info {
+    padding: 0 20px 24px !important;
+    text-align: center !important;
+  }
+
+  .breadcrumbs {
+    display: none !important;
   }
 }
 

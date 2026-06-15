@@ -110,6 +110,9 @@
                                     <h1><shopify-data query="product.title"></shopify-data></h1>
                                     <p class="price" style="font-size: 1.5rem; margin-bottom: 1.5rem;"><shopify-money
                                             query="product.selectedOrFirstAvailableVariant.price"></shopify-money></p>
+                                            <div class="product-stock-status">
+    <shopify-data query="product.selectedOrFirstAvailableVariant.availableForSale"></shopify-data>
+</div>
                                     <div class="desc"
                                         style="margin-bottom: 2rem; color: var(--text-muted-dark); font-size: var(--fs-sm); line-height: 1.6;">
                                         <shopify-data query="product.descriptionHtml"></shopify-data>

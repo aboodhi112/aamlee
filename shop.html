@@ -111,7 +111,7 @@
                                     <template>
                                         <li>
                                             <a href="#" class="collection-filter-btn" 
-                                               shopify-attr--data-collection-handle="collection.handle">
+                                                shopify-attr--data-collection-handle="collection.handle">
                                                 <shopify-data query="collection.title"></shopify-data>
                                             </a>
                                         </li>
@@ -153,16 +153,27 @@
                                         shopify-attr--data-handle="product.handle"
                                         onclick="window.location.href = 'product.html?handle=' + this.getAttribute('data-handle');">
                                         
-                                        <div class="product-image-wrapper" style="position: relative; cursor: pointer; margin-bottom: 0.75rem;">
-                                            <shopify-media query="product.selectedOrFirstAvailableVariant.image"
+                                        <div class="product-image-wrapper">
+                                            <shopify-media
+                                                query="product.selectedOrFirstAvailableVariant.image"
                                                 class="catalog-main-media-target"
-                                                style="width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 1;"></shopify-media>
+                                                style="width:100%; height:100%; object-fit:cover; display:block; aspect-ratio:1;">
+                                            </shopify-media>
+
+                                            <div class="stock-status">
+    <shopify-data query="product.selectedOrFirstAvailableVariant.availableForSale"></shopify-data>
+</div>
+
+<div class="sold-out-overlay">
+    SOLD OUT
+</div>
                                         </div>
 
                                         <div class="product-card__meta-details">
                                             <span class="product-card__category"><shopify-data query="product.vendor"></shopify-data></span>
                                             <h3 class="product-card__title"><shopify-data query="product.title"></shopify-data></h3>
                                             <p class="product-card__price"><shopify-money query="product.selectedOrFirstAvailableVariant.price"></shopify-money></p>
+                                            
                                         </div>
                                     </div>
                                 </template>

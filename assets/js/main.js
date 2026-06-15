@@ -748,6 +748,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Native custom media index transition layer can extend here seamlessly
         }
     });
+    // Universal Product Card Navigation
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.dynamic-clickable-card');
+
+    if (!card || !card.dataset.handle) return;
+
+    window.location.href = `product.html?handle=${card.dataset.handle}`;
+});
     // --- Homepage Horizontal Product Carousel Slider Scroller Router ---
 window.scrollFeaturedRow = function(direction) {
     const trackRow = document.getElementById('featured-products-row');
@@ -763,7 +771,25 @@ window.scrollFeaturedRow = function(direction) {
         behavior: 'smooth'
     });
 };
+setTimeout(() => {
+    document.querySelectorAll('.product-card').forEach(card => {
+        const stock = card.querySelector('.stock-status');
 
+        if (!stock || stock.textContent.trim() === '') {
+            card.classList.add('sold-out');
+        }
+    });
+}, 1500);
+setTimeout(() => {
+    const stockStatus = document.querySelector('.product-stock-status');
+
+    if (stockStatus && stockStatus.textContent.trim() === '') {
+        stockStatus.textContent = 'SOLD OUT';
+        stockStatus.classList.add('sold-out');
+    } else if (stockStatus) {
+        stockStatus.remove();
+    }
+}, 1500);
     window.addEventListener('scroll', updateHeader, { passive: true });
     updateHeader();
     initDrawer();

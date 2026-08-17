@@ -108,9 +108,16 @@
                                         style="color: var(--text-muted-dark); margin-bottom: 0.5rem;"><shopify-data
                                             query="product.vendor"></shopify-data></span>
                                     <h1><shopify-data query="product.title"></shopify-data></h1>
-                                    <p class="price" style="font-size: 1.5rem; margin-bottom: 1.5rem;"><shopify-money
-                                            query="product.selectedOrFirstAvailableVariant.price"></shopify-money></p>
-                                            <div class="product-stock-status">
+                                    <div class="product-price-wrapper">
+    <span class="price-current">
+        <shopify-money query="product.selectedOrFirstAvailableVariant.price"></shopify-money>
+    </span>
+    <span class="price-compare">
+        <shopify-money query="product.selectedOrFirstAvailableVariant.compareAtPrice"></shopify-money>
+    </span>
+</div>
+
+<div class="product-stock-status">
     <shopify-data query="product.selectedOrFirstAvailableVariant.availableForSale"></shopify-data>
 </div>
                                     <div class="desc"

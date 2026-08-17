@@ -3158,6 +3158,243 @@ shopify-media img {
     }
 
 }
+/* Product Price & Strikethrough Layout */
+.product-price-wrapper {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-price-wrapper .price-current {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.product-price-wrapper .price-compare {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--text-muted-dark);
+    text-decoration: line-through;
+    opacity: 0.65;
+}
+
+/* Auto-hide compare price block if empty */
+.price-compare:empty,
+.price-compare shopify-money:empty,
+shopify-money[query="product.selectedOrFirstAvailableVariant.compareAtPrice"]:empty {
+    display: none !important;
+}
+
+/* Align price and stock elements on mobile */
+@media (max-width: 768px) {
+    .product-price-wrapper {
+        justify-content: center;
+    }
+}
+/* --- High-End Product Card Layout & Spacing Tightening --- */
+.product-card {
+    background: #fbf7f1 url('../images/bg-creme.png') center/cover !important;
+    padding-bottom: 0.75rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    height: 100%;
+}
+
+.product-image-wrapper {
+    position: relative !important;
+    aspect-ratio: 1 / 1 !important;
+    margin-bottom: 0.65rem !important;
+    overflow: hidden;
+}
+
+/* Meta Details Container: Eliminates dead vertical space */
+.product-card__meta-details {
+    padding: 0 1rem 0.5rem 1rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    gap: 0.2rem !important;
+    flex: unset !important;
+}
+
+/* Vendor Label */
+.product-card__category {
+    font-family: var(--font-body) !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: #8a705e !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    margin-bottom: 0 !important;
+    line-height: 1.2 !important;
+}
+
+/* Title: High-contrast rich dark color */
+.product-card__title {
+    font-family: var(--font-display) !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    color: #1e090a !important; /* Deep dark tone for sharp readability */
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.01em !important;
+    min-height: unset !important;
+}
+
+/* Price Section */
+.product-card__price {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 0.5rem !important;
+    margin-top: 0.35rem !important;
+}
+
+.product-card__price .price-current {
+    font-family: var(--font-display) !important;
+    font-size: 1.35rem !important;
+    font-weight: 600 !important;
+    color: #1e090a !important;
+}
+
+.product-card__price .price-compare {
+    font-family: var(--font-display) !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    color: #8c7265 !important;
+    text-decoration: line-through !important;
+    opacity: 0.8 !important;
+}
+
+
+/* ==========================================================
+   PRODUCT CARD LAYOUT & SALE BADGE FIX
+   ========================================================== */
+
+/* 1. Reset card container to fit content naturally */
+.product-card,
+.featured-row-carousel .product-card,
+#featured-products-row .product-card {
+    background: #fbf7f1 url('../images/bg-creme.png') center/cover !important;
+    border: 1px solid rgba(43, 26, 20, 0.08) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    height: auto !important;
+    min-height: unset !important;
+    padding-bottom: 1.25rem !important;
+    box-sizing: border-box !important;
+}
+
+/* 2. Lock image ratio to a clean square */
+.product-image-wrapper {
+    position: relative !important;
+    width: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+    margin-bottom: 0.75rem !important;
+    overflow: hidden !important;
+    background: var(--bg-cream-2) !important;
+}
+
+/* 3. Meta details container - zero excessive height */
+.product-card__meta-details {
+    padding: 0 1rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    gap: 0.15rem !important;
+    flex: unset !important;
+    height: auto !important;
+}
+
+/* 4. Vendor Category */
+.product-card__category {
+    font-family: var(--font-body) !important;
+    font-size: 0.72rem !important;
+    font-weight: 500 !important;
+    color: #8c766b !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    line-height: 1.2 !important;
+    display: block !important;
+}
+
+/* 5. Title Fix - Override old 72px center rule */
+.product-card__title {
+    font-family: var(--font-display) !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    color: #1a0809 !important; /* Deep dark tone for sharp readability */
+    margin: 0.15rem 0 0 0 !important;
+    line-height: 1.25 !important;
+    min-height: unset !important;
+    display: block !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+}
+
+/* 6. Pricing Layout */
+.product-card__price {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 0.5rem !important;
+    margin-top: 0.35rem !important;
+}
+
+.product-card__price .price-current {
+    font-family: var(--font-display) !important;
+    font-size: 1.35rem !important;
+    font-weight: 600 !important;
+    color: #1a0809 !important;
+}
+
+.product-card__price .price-compare {
+    font-family: var(--font-display) !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    color: #8c766b !important;
+    text-decoration: line-through !important;
+    opacity: 0.8 !important;
+}
+
+/* Hide empty compare price automatically */
+.product-card__price .price-compare:empty,
+.product-card__price .price-compare shopify-money:empty {
+    display: none !important;
+}
+
+/* 7. Luxury Sale Tag Badge */
+.sale-badge {
+    position: absolute !important;
+    top: 8px !important;
+    left: 8px !important;
+    background: #210708 !important;
+    color: #d8b98a !important;
+    border: 1px solid rgba(216, 185, 138, 0.4) !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.65rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+    padding: 0.25rem 0.55rem !important;
+    border-radius: 2px !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
+}
+
+/* Automatically hide badge if product has no compare-at price */
+.sale-badge:not([data-has-discount]),
+.sale-badge[data-has-discount="null"],
+.sale-badge[data-has-discount=""],
+.sale-badge[data-has-discount="false"] {
+    display: none !important;
+}
 
 
 

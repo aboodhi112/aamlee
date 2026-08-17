@@ -54,6 +54,7 @@
                             style="width: 72px; height: 72px; object-fit: contain;">
                     </button>
                 </div>
+            </div>
         </header>
 
         <div id="drawer-overlay"></div>
@@ -151,9 +152,11 @@
                                         shopify-attr--data-title="product.title"
                                         shopify-attr--data-price="product.selectedOrFirstAvailableVariant.price.amount"
                                         shopify-attr--data-handle="product.handle"
-                                        onclick="window.location.href = 'product.html?handle=' + this.getAttribute('data-handle');">
+                                        onclick="window.location.href = 'product.html?handle=' + this.getAttribute('shopify-attr--data-handle');">
                                         
                                         <div class="product-image-wrapper">
+                                            <span class="sale-badge" shopify-attr--data-has-discount="product.selectedOrFirstAvailableVariant.compareAtPrice.amount">Sale</span>
+
                                             <shopify-media
                                                 query="product.selectedOrFirstAvailableVariant.image"
                                                 class="catalog-main-media-target"
@@ -161,19 +164,25 @@
                                             </shopify-media>
 
                                             <div class="stock-status">
-    <shopify-data query="product.selectedOrFirstAvailableVariant.availableForSale"></shopify-data>
-</div>
+                                                <shopify-data query="product.selectedOrFirstAvailableVariant.availableForSale"></shopify-data>
+                                            </div>
 
-<div class="sold-out-overlay">
-    SOLD OUT
-</div>
+                                            <div class="sold-out-overlay">
+                                                SOLD OUT
+                                            </div>
                                         </div>
 
                                         <div class="product-card__meta-details">
                                             <span class="product-card__category"><shopify-data query="product.vendor"></shopify-data></span>
                                             <h3 class="product-card__title"><shopify-data query="product.title"></shopify-data></h3>
-                                            <p class="product-card__price"><shopify-money query="product.selectedOrFirstAvailableVariant.price"></shopify-money></p>
-                                            
+                                            <div class="product-card__price">
+                                                <span class="price-current">
+                                                    <shopify-money query="product.selectedOrFirstAvailableVariant.price"></shopify-money>
+                                                </span>
+                                                <span class="price-compare">
+                                                    <shopify-money query="product.selectedOrFirstAvailableVariant.compareAtPrice"></shopify-money>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </template>
@@ -243,8 +252,8 @@
     </shopify-store>
     <script src="assets/js/main.js"></script>
     <button id="backToTop" class="back-to-top" aria-label="Back to top">
-    ↑
-</button>
+        ↑
+    </button>
 </body>
 
 </html>

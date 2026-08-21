@@ -542,6 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const internalDomain = '2p1s8f-yx.myshopify.com';
     const internalToken = '730fb496b29ebd0c38574b927925f703';
+    
 
     let activeCollectionFilter = 'all';
     let productCollectionMap = {};
@@ -577,11 +578,12 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({
             query: `
             query {
-                products(first: 50) {
+                products(first: 250) {
                     edges {
                         node {
                             handle
-                            collections(first: 5) {
+                            CreatedDate: createdAt
+                            collections(first: 250) {
                                 edges {
                                     node {
                                         handle
@@ -645,14 +647,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const syncCatalog = () => {
         if (!isMapLoaded) return false;
 
-        const allCards = Array.from(catalog.querySelectorAll('.product-card[data-handle]'));
-        if (!allCards.length) return false;
+        // NEW LINE:
+        const allCards = Array.from(catalog.querySelectorAll('.product-card'));
+        if (!allCards.length) {
+        window.setTimeout(syncCatalog, 300);
+        return false;
+    }
 
         const seenHandles = new Set();
         const cards = [];
 
         allCards.forEach(card => {
-            const handle = card.getAttribute('data-handle');
+            // NEW LINE:
+        const handle = card.getAttribute('data-handle') || card.getAttribute('shopify-attr--data-handle') || '';
             if (!seenHandles.has(handle)) {
                 seenHandles.add(handle);
                 cards.push(card);
@@ -666,8 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const filtered = cards.filter((card) => {
             const title = (card.getAttribute('shopify-attr--data-title') || card.dataset.title || card.querySelector('.product-card__title')?.textContent || '').toLowerCase();
-            const handle = card.getAttribute('data-handle') || '';
-            
+            const handle = card.getAttribute('data-handle') || card.getAttribute('shopify-attr--data-handle') || '';            
             const matchesSearch = !query || title.includes(query);
             const linkedCollections = productCollectionMap[handle] || [];
             const matchesCollection = activeCollectionFilter === 'all' || linkedCollections.includes(activeCollectionFilter);
